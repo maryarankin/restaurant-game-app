@@ -10,17 +10,10 @@
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 </head>
 
-<body>
+<body class="d-flex flex-column vh-100">
 
-    <main class="text-center position-absolute top-50 start-50 translate-middle">
-        <div class="title">
-            <h1>so you want to own a restaurant?</h1>
-            <h2>a simulation game</h2>
-        </div>
-        <div class="button mt-5">
-            <!-- Note: eventually this button will lead to register/login page but for now there is no authentication -->
-            <a href="/restaurants"><button type="button" class="btn btn-info btn-lg">Get Started</button></a>
-        </div>
+    <main clas="container mt-5">
+        <%- body %>
     </main>
 
 </body>
