@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const mongoose = require('mongoose')
+const ejsMate = require('ejs-mate')
 const app = express()
 
 const mongoDbUrl = "mongodb://localhost:27017/restaurant-game";
@@ -15,8 +16,14 @@ mongoose.connection.once("open", () => {
     console.log("database connected");
 })
 
+const Restaurant = require('./models/restaurant')
+
+app.engine('ejs', ejsMate)
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
+
 app.get('/', (req, res) => {
-    res.send('hi')
+    res.render('home')
 })
 
 app.listen(3000, () => {
