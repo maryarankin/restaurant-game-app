@@ -1,0 +1,35 @@
+<% layout('layouts/boilerplate') %>
+
+
+
+    <div class="container">
+        <h1>start a restaurant</h1>
+        <p>let's get you all set up</p>
+
+        <div class="mt-3">
+
+            <form action="/restaurants" method="POST">
+                <div class="mb-3">
+                    <label for="name">restaurant name</label>
+                    <input type="text" id="name" name="restaurant[name]" placeholder="restaurant name">
+                </div>
+
+                <div class="mb-3">
+                    <label for="type">type</label>
+                    <select id="type" name="restaurant[type]">
+                        <option value="pizza-parlor">pizza parlor</option>
+                        <option value="icecream-shop">ice cream shop</option>
+                        <option value="burger-place">burger place</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location">location</label>
+                    <input type="text" id="location" name="restaurant[location]" placeholder="location">
+                </div>
+
+                <button>let's go</button>
+            </form>
+
+        </div>
+    </div>
