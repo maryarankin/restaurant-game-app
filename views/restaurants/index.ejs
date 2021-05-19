@@ -38,17 +38,24 @@
                                             <% } %>
 
                                                 <div class="card-body">
-                                                    <h5 class="card-title">
+                                                    <h5 class="card-title mt-1">
                                                         <%= r.name %>
                                                     </h5>
-                                                    <p class="card-text">Some quick example text to build on the card
-                                                        title
-                                                        and make up the
-                                                        bulk
-                                                        of
-                                                        the
-                                                        card's content.</p>
-                                                    <a href="/restaurants/<%= r._id %>" class="btn btn-primary">view</a>
+
+                                                </div>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">
+                                                        <%= r.location %>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        profit: <%= r.profit %>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        rating: <%= r.rating %>
+                                                    </li>
+                                                </ul>
+                                                <div class="card-body">
+                                                    <a href="/restaurants/<%= r._id %>" class="btn btn-light">view</a>
                                                 </div>
                     </div>
                 </div>
