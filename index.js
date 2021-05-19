@@ -44,8 +44,9 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-app.get('/restaurants', (req, res) => {
-    res.render('restaurants/index')
+app.get('/restaurants', async (req, res) => {
+    const restaurants = await Restaurant.find({})
+    res.render('restaurants/index', { restaurants })
 })
 
 app.get('/restaurants/new', (req, res) => {
@@ -59,6 +60,12 @@ app.post('/restaurants', async (req, res) => {
     restaurant.rating = 1
     await restaurant.save()
     res.redirect('/restaurants')
+})
+
+app.get('/restaurants/:id', async (req, res) => {
+    const { id } = req.params
+    const restaurant = await Restaurant.findById(id)
+    res.render('restaurants/show', { restaurant })
 })
 
 

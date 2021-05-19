@@ -1,4 +1,60 @@
 <% layout('layouts/boilerplate') %>
 
-    <h1>here are your restaurants</h1>
-    <a href="/restaurants/new"><button>create new</button></a>
+    <div class="container mt-3">
+
+        <div class="d-inline">
+            <div class="d-flex justify-content-start">
+                <h1>your restaurants</h1>
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="/restaurants/new"><button type="button" class="btn btn-info">open
+                        new
+                        restaurant</button></a>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+
+            <% for (let r of restaurants) { %>
+                <div class="col">
+                    <div class="card h-100 text-dark bg-warning">
+                        <% if (r.type=="pizza-parlor" ) { %>
+                            <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
+                                class="card-img-top" alt="pizza">
+                            <% } %>
+
+                                <% if (r.type=="icecream-shop" ) { %>
+                                    <img src="https://images.unsplash.com/photo-1505394033641-40c6ad1178d7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1106&q=80"
+                                        class="card-img-top" alt="ice cream">
+                                    <% } %>
+
+                                        <% if (r.type=="burger-place" ) { %>
+                                            <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
+                                                class="card-img-top" alt="burger">
+                                            <% } %>
+
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <%= r.name %>
+                                                    </h5>
+                                                    <p class="card-text">Some quick example text to build on the card
+                                                        title
+                                                        and make up the
+                                                        bulk
+                                                        of
+                                                        the
+                                                        card's content.</p>
+                                                    <a href="/restaurants/<%= r._id %>" class="btn btn-primary">view</a>
+                                                </div>
+                    </div>
+                </div>
+
+                <% } %>
+
+        </div>
+
+    </div>

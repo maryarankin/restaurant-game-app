@@ -1,0 +1,35 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="container mt-3 text-center">
+        <h1>
+            <%= restaurant.name %>
+        </h1>
+
+        <div>
+
+            <% if (restaurant.type=="pizza-parlor" ) { %>
+                <h5>type: pizza parlor</h5>
+                <% } %>
+
+                    <% if (restaurant.type=="icecream-shop" ) { %>
+                        <h5>type: ice cream shop</h5>
+                        <% } %>
+
+                            <% if (restaurant.type=="burger-place" ) { %>
+                                <h5>type: burger place</h5>
+                                <% } %>
+
+                                    <h5>
+                                        location: <%= restaurant.location %>
+                                    </h5>
+                                    <h5>
+                                        employees: <%= restaurant.numEmployees %>
+                                    </h5>
+                                    <h5>
+                                        profit: $<%= restaurant.profit %>
+                                    </h5>
+                                    <h5>
+                                        rating: <%= restaurant.rating %>
+                                    </h5>
+        </div>
+    </div>
