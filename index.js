@@ -5,6 +5,9 @@ const path = require('path')
 const mongoose = require('mongoose')
 const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
+const session = require('express-session')
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
 
 
 
@@ -38,6 +41,34 @@ app.set('views', path.join(__dirname, 'views'))
 // POST/PUT REQUEST STUFF
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+
+
+
+// SESSION
+const sessionConfig = {
+    //store - add once deploy to use mongo atlas instead of locally 
+    name: 'session', //instead of default name (connect.sid) - this helps with security b/c hacker might otherwise try to take all connect.sid cookies
+    secret: 'testsecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        //secure: true, //wait until deployed
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+
+app.use(session(sessionConfig))
+
+
+
+// AUTHENTICATION
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 
 
