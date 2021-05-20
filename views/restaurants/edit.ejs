@@ -1,0 +1,22 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="container mt-5" style="width: 75%">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">edit your restaurant</h5>
+                <p class="card-text">regretting those choices now, huh?</p>
+            </div>
+            <div class="card-body">
+
+                <form action="/restaurants/<%= restaurant._id %>?_method=PUT" method="POST">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">rename?</label>
+                        <input class="form-control" type="text" id="name" name="restaurant[name]"
+                            placeholder="<%= restaurant.name %>">
+                    </div>
+
+                    <button class="btn btn-info">change</button>
+                </form>
+            </div>
+        </div>
+    </div>

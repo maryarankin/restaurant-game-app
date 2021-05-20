@@ -4,6 +4,7 @@ const app = express()
 const path = require('path')
 const mongoose = require('mongoose')
 const ejsMate = require('ejs-mate')
+const methodOverride = require('method-override')
 
 
 
@@ -34,8 +35,9 @@ app.set('views', path.join(__dirname, 'views'))
 
 
 
-// POST REQUEST STUFF
+// POST/PUT REQUEST STUFF
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 
 
@@ -66,6 +68,21 @@ app.get('/restaurants/:id', async (req, res) => {
     const { id } = req.params
     const restaurant = await Restaurant.findById(id)
     res.render('restaurants/show', { restaurant })
+})
+
+app.get('/restaurants/:id/edit', async (req, res) => {
+    const { id } = req.params
+    const restaurant = await Restaurant.findById(id)
+    res.render('restaurants/edit', { restaurant })
+})
+
+app.put('/restaurants/:id', async (req, res) => {
+    const { id } = req.params
+    const restaurant = await Restaurant.findById(id)
+    const restaurantName = req.body.restaurant.name
+    restaurant.name = restaurantName
+    await restaurant.save()
+    res.redirect(`/restaurants/${restaurant._id}`)
 })
 
 
