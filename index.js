@@ -93,11 +93,14 @@ app.get('/restaurants/new', (req, res) => {
 })
 
 app.post('/restaurants', async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
     const restaurant = new Restaurant(req.body.restaurant)
     restaurant.numEmployees = 0
     restaurant.profit = 0
     restaurant.rating = 1
+    user.restaurants.push(restaurant)
     await restaurant.save()
+    await user.save()
     res.redirect('/restaurants')
 })
 

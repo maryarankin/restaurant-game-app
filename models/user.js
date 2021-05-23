@@ -8,8 +8,16 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true
-    }
+    },
+    restaurants: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Restaurant'
+        }
+    ]
 })
+
+//note: need to add fxnality to delete restaurants if user is deleted
 
 UserSchema.plugin(passportLocalMongoose)
 

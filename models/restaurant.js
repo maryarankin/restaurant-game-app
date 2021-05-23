@@ -33,6 +33,4 @@ const RestaurantSchema = new Schema({
     }
 })
 
-//in future, add owner
-
 module.exports = mongoose.model('Restaurant', RestaurantSchema)
