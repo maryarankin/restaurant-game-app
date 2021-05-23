@@ -5,3 +5,11 @@ module.exports.isLoggedIn = (req, res, next) => {
     }
     next()
 }
+
+module.exports.isOwner = (req, res, next) => {
+    const { id } = req.params
+    if (res.locals.currentUser.restaurants.includes(id)) {
+        return Restaurant.findById(id)
+    }
+    next()
+}

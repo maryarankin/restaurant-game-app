@@ -8,6 +8,7 @@ const methodOverride = require('method-override')
 const session = require('express-session')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
+const { isLoggedIn, isOwner } = require('./middleware')
 
 
 
@@ -83,16 +84,23 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-app.get('/restaurants', async (req, res) => {
-    const restaurants = await Restaurant.find({})
+app.get('/restaurants', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    const userRestaurants = user.restaurants
+    const restaurants = []
+    for (let i = 0; i < userRestaurants.length; i++) {
+        const restaurant = await Restaurant.findById(userRestaurants[i])
+        restaurants.push(restaurant)
+    }
+
     res.render('restaurants/index', { restaurants })
 })
 
-app.get('/restaurants/new', (req, res) => {
+app.get('/restaurants/new', isLoggedIn, (req, res) => {
     res.render('restaurants/new')
 })
 
-app.post('/restaurants', async (req, res) => {
+app.post('/restaurants', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
     const restaurant = new Restaurant(req.body.restaurant)
     restaurant.numEmployees = 0
@@ -104,25 +112,43 @@ app.post('/restaurants', async (req, res) => {
     res.redirect('/restaurants')
 })
 
-app.get('/restaurants/:id', async (req, res) => {
+app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
     const { id } = req.params
-    const restaurant = await Restaurant.findById(id)
-    res.render('restaurants/show', { restaurant })
+    if (user.restaurants.includes(id)) {
+        const restaurant = await Restaurant.findById(id)
+        res.render('restaurants/show', { restaurant })
+    }
+    else {
+        res.send('restaurant doesnt exist')
+    }
 })
 
-app.get('/restaurants/:id/edit', async (req, res) => {
+app.get('/restaurants/:id/edit', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
     const { id } = req.params
-    const restaurant = await Restaurant.findById(id)
-    res.render('restaurants/edit', { restaurant })
+    if (user.restaurants.includes(id)) {
+        const restaurant = await Restaurant.findById(id)
+        res.render('restaurants/edit', { restaurant })
+    }
+    else {
+        res.send('restaurant doesnt exist')
+    }
 })
 
-app.put('/restaurants/:id', async (req, res) => {
+app.put('/restaurants/:id', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
     const { id } = req.params
-    const restaurant = await Restaurant.findById(id)
-    const restaurantName = req.body.restaurant.name
-    restaurant.name = restaurantName
-    await restaurant.save()
-    res.redirect(`/restaurants/${restaurant._id}`)
+    if (user.restaurants.includes(id)) {
+        const restaurant = await Restaurant.findById(id)
+        const restaurantName = req.body.restaurant.name
+        restaurant.name = restaurantName
+        await restaurant.save()
+        res.redirect(`/restaurants/${restaurant._id}`)
+    }
+    else {
+        res.send('restaurant doesnt exist')
+    }
 })
 
 app.get('/register', (req, res) => {
@@ -134,7 +160,7 @@ app.post('/register', async (req, res, next) => {
         const { email, username, password } = req.body
         const user = new User({ email, username })
         const registeredUser = await User.register(user, password)
-        //login user immediately:
+        //log in user immediately:
         req.login(registeredUser, err => {
             if (err) return next(err)
             res.redirect('/restaurants')
