@@ -6,12 +6,34 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-link" href="/restaurants">my restaurants</a>
-                <a class="nav-link" href="/restaurants/new">create new</a>
-                <a class="nav-link" href="/restaurants/new">buy supplies</a>
-                <a class="nav-link" href="/restaurants/new">inventory</a>
-            </div>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/restaurants">my restaurants</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/restaurants/new">create new</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">buy supplies</a>
+                </li>
+            </ul>
+            <% if(currentUser) { %>
+                <span class="navbar-text">
+                    <a class="nav-link" href="#">
+                        <%= currentUser.username %>
+                    </a>
+                </span>
+                <span class="navbar-text">
+                    <a class="nav-link" href="/logout">logout</a>
+                </span>
+                <% } else { %>
+                    <span class="navbar-text">
+                        <a class="nav-link" href="/login">log in</a>
+                    </span>
+                    <span class="navbar-text">
+                        <a class="nav-link" href="/register">register</a>
+                    </span>
+                    <% } %>
         </div>
     </div>
 </nav>

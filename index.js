@@ -28,6 +28,7 @@ mongoose.connection.once("open", () => {
 
 // MONGOOSE MODELS
 const Restaurant = require('./models/restaurant')
+const User = require('./models/user')
 
 
 
@@ -69,6 +70,11 @@ app.use(passport.session())
 passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+
+app.use((req, res, next) => {
+    res.locals.currentUser = req.user
+    next()
+})
 
 
 
@@ -114,6 +120,40 @@ app.put('/restaurants/:id', async (req, res) => {
     restaurant.name = restaurantName
     await restaurant.save()
     res.redirect(`/restaurants/${restaurant._id}`)
+})
+
+app.get('/register', (req, res) => {
+    res.render('users/register')
+})
+
+app.post('/register', async (req, res, next) => {
+    try {
+        const { email, username, password } = req.body
+        const user = new User({ email, username })
+        const registeredUser = await User.register(user, password)
+        //login user immediately:
+        req.login(registeredUser, err => {
+            if (err) return next(err)
+            res.redirect('/restaurants')
+        })
+    } catch (e) {
+        res.redirect('register')
+    }
+})
+
+app.get('/login', (req, res) => {
+    res.render('users/login')
+})
+
+app.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (req, res) => {
+    const redirectUrl = req.session.returnTo || '/restaurants'
+    delete req.session.returnTo
+    res.redirect(redirectUrl)
+})
+
+app.get('/logout', (req, res) => {
+    req.logout()
+    res.redirect('/restaurants')
 })
 
 
