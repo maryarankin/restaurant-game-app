@@ -151,6 +151,20 @@ app.put('/restaurants/:id', isLoggedIn, async (req, res) => {
     }
 })
 
+app.delete('/restaurants/:id', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    const { id } = req.params
+    if (user.restaurants.includes(id)) {
+        await Restaurant.findByIdAndDelete(id)
+        user.restaurants.pull({ _id: id })
+        await user.save()
+        res.redirect('/restaurants')
+    }
+    else {
+        res.send('restaurant doesnt exist')
+    }
+})
+
 app.get('/register', (req, res) => {
     res.render('users/register')
 })

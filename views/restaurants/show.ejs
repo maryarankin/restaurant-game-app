@@ -90,7 +90,7 @@
                     </div>
                 </div>
 
-                <div class="card bg-warning">
+                <div class="card bg-warning mb-4">
                     <div class="card-body">
                         <h5 class="card-title mt-1">
                             supplies
@@ -127,6 +127,15 @@
                         <a href="#" class="card-link btn btn-light">upgrade</a>
                     </div>
                 </div>
+
+                <div>
+                    <form action="/restaurants/<%= restaurant._id %>?_method=DELETE" method="POST">
+                        <div class="d-grid gap-2">
+                            <button class="card-link btn btn-danger">delete restaurant</button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>

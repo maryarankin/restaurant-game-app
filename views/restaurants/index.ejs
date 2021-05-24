@@ -20,7 +20,7 @@
         <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
             <% if (restaurants[0]==null) { %>
                 <p>no restaurants yet</p>
-                <% } %>
+                <% } else { %>
 
                     <% for (let r of restaurants) { %>
                         <div class="col">
@@ -66,6 +66,7 @@
 
                         <% } %>
 
+                            <% } %>
         </div>
 
     </div>
