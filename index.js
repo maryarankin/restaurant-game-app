@@ -17,7 +17,9 @@ const mongoDbUrl = 'mongodb://localhost:27017/restaurant-game'
 
 mongoose.connect(mongoDbUrl, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
 })
 
 mongoose.connection.on("error", console.error.bind(console, "connection error:"));
@@ -30,6 +32,7 @@ mongoose.connection.once("open", () => {
 // MONGOOSE MODELS
 const Restaurant = require('./models/restaurant')
 const User = require('./models/user')
+const Dish = require('./models/dish')
 
 
 
@@ -106,8 +109,19 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
     restaurant.numEmployees = 0
     restaurant.profit = 0
     restaurant.rating = 1
-    user.restaurants.push(restaurant)
+    if (restaurant.type === 'pizza-parlor') {
+        const dish = new Dish()
+        dish.save()
+        restaurant.dishes.push(dish)
+    }
+    else if (restaurant.type === 'icecream-shop') {
+
+    }
+    else {
+
+    }
     await restaurant.save()
+    user.restaurants.push(restaurant)
     await user.save()
     res.redirect('/restaurants')
 })
