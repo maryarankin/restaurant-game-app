@@ -20,7 +20,7 @@ mongoose.connection.once("open", () => {
 
 const pizzaDishes = [
     {
-        name: 'slice of cheese pizza',
+        name: 'cheesePizza',
         price: 3.00,
         category: 'pizza-parlor',
         ingredients: [

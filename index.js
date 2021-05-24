@@ -87,6 +87,7 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
+//DO .POPULATE INSTEAD:
 app.get('/restaurants', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
     const userRestaurants = user.restaurants
@@ -109,16 +110,10 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
     restaurant.numEmployees = 0
     restaurant.profit = 0
     restaurant.rating = 1
-    if (restaurant.type === 'pizza-parlor') {
-        const dish = new Dish()
-        dish.save()
+    const dishes = await Dish.find({ category: restaurant.type })
+    //change this syntax:
+    for (let dish of dishes) {
         restaurant.dishes.push(dish)
-    }
-    else if (restaurant.type === 'icecream-shop') {
-
-    }
-    else {
-
     }
     await restaurant.save()
     user.restaurants.push(restaurant)
@@ -130,7 +125,7 @@ app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
     const { id } = req.params
     if (user.restaurants.includes(id)) {
-        const restaurant = await Restaurant.findById(id)
+        const restaurant = await Restaurant.findById(id).populate('dishes')
         res.render('restaurants/show', { restaurant })
     }
     else {
@@ -211,6 +206,12 @@ app.post('/login', passport.authenticate('local', { failureFlash: true, failureR
 app.get('/logout', (req, res) => {
     req.logout()
     res.redirect('/restaurants')
+})
+
+app.get('/menu/:name', async (req, res) => {
+    const { name } = req.params
+    const dish = await Dish.find({ name: "cheesePizza" })
+    res.render('dishes/show', { dish })
 })
 
 

@@ -18,55 +18,69 @@
 
 
         <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
-            <% if (restaurants[0]==null) { %>
-                <p>no restaurants yet</p>
-                <% } else { %>
 
-                    <% for (let r of restaurants) { %>
-                        <div class="col">
-                            <div class="card h-100 text-dark bg-warning">
-                                <% if (r.type=="pizza-parlor" ) { %>
-                                    <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
-                                        class="card-img-top" alt="pizza">
+            <!-- CHANGE THIS TO INSTEAD REMOVE NULLS FROM BEGINNING OF RESTAURANT ARRAY WHEN ONE IS DELETED -->
+
+            <% let showRestaurants=false %>
+                <% for (let i=0; i < restaurants.length; i++) { %>
+                    <% if (restaurants[i] !==null) { %>
+                        <% showRestaurants=true %>
+                            <% break %>
+                                <% } %>
                                     <% } %>
+                                        <% if (!showRestaurants) { %>
+                                            <p>no restaurants yet</p>
+                                            <% } else { %>
 
-                                        <% if (r.type=="icecream-shop" ) { %>
-                                            <img src="https://images.unsplash.com/photo-1505394033641-40c6ad1178d7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1106&q=80"
-                                                class="card-img-top" alt="ice cream">
-                                            <% } %>
+                                                <% for (let r of restaurants) { %>
+                                                    <% if (r !==null) { %>
+                                                        <div class="col">
+                                                            <div class="card h-100 text-dark bg-warning">
+                                                                <% if (r.type=="pizza-parlor" ) { %>
+                                                                    <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
+                                                                        class="card-img-top" alt="pizza">
+                                                                    <% } %>
 
-                                                <% if (r.type=="burger-place" ) { %>
-                                                    <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
-                                                        class="card-img-top" alt="burger">
-                                                    <% } %>
+                                                                        <% if (r.type=="icecream-shop" ) { %>
+                                                                            <img src="https://images.unsplash.com/photo-1505394033641-40c6ad1178d7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1106&q=80"
+                                                                                class="card-img-top" alt="ice cream">
+                                                                            <% } %>
 
-                                                        <div class="card-body">
-                                                            <h5 class="card-title mt-1">
-                                                                <%= r.name %>
-                                                            </h5>
+                                                                                <% if (r.type=="burger-place" ) { %>
+                                                                                    <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
+                                                                                        class="card-img-top"
+                                                                                        alt="burger">
+                                                                                    <% } %>
 
+                                                                                        <div class="card-body">
+                                                                                            <h5 class="card-title mt-1">
+                                                                                                <%= r.name %>
+                                                                                            </h5>
+
+                                                                                        </div>
+                                                                                        <ul
+                                                                                            class="list-group list-group-flush">
+                                                                                            <li class="list-group-item">
+                                                                                                <%= r.location %>
+                                                                                            </li>
+                                                                                            <li class="list-group-item">
+                                                                                                profit: <%= r.profit %>
+                                                                                            </li>
+                                                                                            <li class="list-group-item">
+                                                                                                rating: <%= r.rating %>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                        <div class="card-body">
+                                                                                            <a href="/restaurants/<%= r._id %>"
+                                                                                                class="btn btn-light">view</a>
+                                                                                        </div>
+                                                            </div>
                                                         </div>
-                                                        <ul class="list-group list-group-flush">
-                                                            <li class="list-group-item">
-                                                                <%= r.location %>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                profit: <%= r.profit %>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                rating: <%= r.rating %>
-                                                            </li>
-                                                        </ul>
-                                                        <div class="card-body">
-                                                            <a href="/restaurants/<%= r._id %>"
-                                                                class="btn btn-light">view</a>
-                                                        </div>
-                            </div>
-                        </div>
+                                                        <% } %>
 
-                        <% } %>
+                                                            <% } %>
 
-                            <% } %>
+                                                                <% } %>
         </div>
 
     </div>
