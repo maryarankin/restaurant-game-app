@@ -79,9 +79,11 @@
                         </h5>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <% for (let dish of restaurant.dishes) { %>
+                        <% for (let dish of dishes) { %>
                             <li class="list-group-item">
-                                <%= dish.name %> ... $<%= dish.price %>
+                                <a href="/menu/<%= dish.name %>" class="link-secondary">
+                                    <%= dish.stringName %> ... $<%= dish.price %>
+                                </a>
                             </li>
                             <% } %>
                     </ul>

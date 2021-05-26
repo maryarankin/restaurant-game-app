@@ -13,15 +13,16 @@ mongoose.connect(mongoDbUrl, {
     useFindAndModify: false
 })
 
-mongoose.connection.on("error", console.error.bind(console, "connection error:"));
-mongoose.connection.once("open", () => {
-    console.log("database connected");
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+mongoose.connection.once('open', () => {
+    console.log('database connected');
 })
 
 const pizzaDishes = [
     {
         name: 'cheesePizza',
-        price: 3.00,
+        stringName: 'cheese pizza',
+        price: 9.00,
         category: 'pizza-parlor',
         ingredients: [
             'pizza dough',
@@ -30,8 +31,9 @@ const pizzaDishes = [
         ]
     },
     {
-        name: 'slice of pepperoni pizza',
-        price: 3.50,
+        name: 'pepperoniPizza',
+        stringName: 'pepperoni pizza',
+        price: 9.50,
         category: 'pizza-parlor',
         ingredients: [
             'pizza dough',
@@ -41,8 +43,9 @@ const pizzaDishes = [
         ]
     },
     {
-        name: 'slice of meat lovers pizza',
-        price: 4.00,
+        name: 'meatLoversPizza',
+        stringName: 'meat lovers pizza',
+        price: 10.00,
         category: 'pizza-parlor',
         ingredients: [
             'dough',
@@ -64,7 +67,8 @@ const createPizzas = async () => {
 
 const iceCreamDishes = [
     {
-        name: 'vanilla cone',
+        name: 'vanillaCone',
+        stringName: 'vanilla cone',
         price: 2.00,
         category: 'icecream-shop',
         ingredients: [
@@ -74,7 +78,8 @@ const iceCreamDishes = [
         ]
     },
     {
-        name: 'chocolate cone',
+        name: 'chocolateCone',
+        stringName: 'chocolate cone',
         price: 2.00,
         category: 'icecream-shop',
         ingredients: [
@@ -84,7 +89,8 @@ const iceCreamDishes = [
         ]
     },
     {
-        name: 'strawberry cone',
+        name: 'strawberryCone',
+        stringName: 'strawberry cone',
         price: 2.00,
         category: 'icecream-shop',
         ingredients: [
@@ -106,6 +112,7 @@ const createIceCream = async () => {
 const burgerDishes = [
     {
         name: 'hamburger',
+        stringName: 'hamburger',
         price: 6.00,
         category: 'burger-place',
         ingredients: [
@@ -117,6 +124,7 @@ const burgerDishes = [
     },
     {
         name: 'cheeseburger',
+        stringName: 'cheeseburger',
         price: 6.50,
         category: 'burger-place',
         ingredients: [
@@ -128,8 +136,9 @@ const burgerDishes = [
         ]
     },
     {
-        name: 'bacon cheeseburger',
-        price: 4.00,
+        name: 'baconCheeseburger',
+        stringName: 'bacon cheeseburger',
+        price: 7.00,
         category: 'burger-place',
         ingredients: [
             'bun',

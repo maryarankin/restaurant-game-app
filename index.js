@@ -22,9 +22,9 @@ mongoose.connect(mongoDbUrl, {
     useFindAndModify: false
 })
 
-mongoose.connection.on("error", console.error.bind(console, "connection error:"));
-mongoose.connection.once("open", () => {
-    console.log("database connected");
+mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
+mongoose.connection.once('open', () => {
+    console.log('database connected');
 })
 
 
@@ -46,6 +46,11 @@ app.set('views', path.join(__dirname, 'views'))
 // POST/PUT REQUEST STUFF
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+
+
+
+// STATIC DIRECTORY
+app.use(express.static(path.join(__dirname, 'public')))
 
 
 
@@ -126,7 +131,8 @@ app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params
     if (user.restaurants.includes(id)) {
         const restaurant = await Restaurant.findById(id).populate('dishes')
-        res.render('restaurants/show', { restaurant })
+        const dishes = await Dish.find({ category: restaurant.type })  //change this so don't have to both populate AND find dishes - was working the other day but now isn't
+        res.render('restaurants/show', { restaurant, dishes })
     }
     else {
         res.send('restaurant doesnt exist')
@@ -210,7 +216,7 @@ app.get('/logout', (req, res) => {
 
 app.get('/menu/:name', async (req, res) => {
     const { name } = req.params
-    const dish = await Dish.find({ name: "cheesePizza" })
+    const dish = await Dish.findOne({ name: name })  //when did with .find it wouldn't print dish.name, only dish
     res.render('dishes/show', { dish })
 })
 
@@ -218,5 +224,5 @@ app.get('/menu/:name', async (req, res) => {
 
 // EXPRESS PORT
 app.listen(3000, () => {
-    console.log("serving on port 3000")
+    console.log('serving on port 3000')
 })

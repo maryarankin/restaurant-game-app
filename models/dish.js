@@ -7,6 +7,12 @@ const DishSchema = new Schema({
         type: String,
         required: true
     },
+
+    //REMOVE THIS LATER?
+    stringName: {
+        type: String,
+        required: true
+    },
     price: {
         type: Number,
         required: true

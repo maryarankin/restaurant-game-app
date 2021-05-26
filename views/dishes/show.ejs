@@ -1,7 +1,43 @@
 <% layout('layouts/boilerplate') %>
 
     <div class="container mt-3">
-        <p>
-            <%= dish.name %>
-        </p>
+
+        <div class="my-3">
+            <!-- CHANGE TO "BACK TO RESTAURANT" BUTTON -->
+            <a href="/restaurants"><button type="button" class="btn btn-info">back to
+                    all</button></a>
+        </div>
+
+        <div class="col">
+            <div class="card bg-warning">
+
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= dish.stringName %>
+                    </h5>
+                    <p class="card-text">
+
+                    </p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>price: $<%= dish.price %></strong> <button type="button" class="btn btn-info"
+                            id="price">increase</button>
+                    </li>
+                    <li class="list-group-item"><strong>ingredients:</strong>
+                    </li>
+                    <% for (let i of dish.ingredients) { %>
+                        <li class="list-group-item">
+                            <%= i %>
+                        </li>
+                        <% } %>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link btn btn-light">buy ingredients</a>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="/javascript/increasePrice.js"></script>
