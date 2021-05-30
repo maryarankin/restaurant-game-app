@@ -3,6 +3,7 @@
 
 const mongoose = require('mongoose')
 const Dish = require('./models/dish')
+const Ingredient = require('./models/ingredient')
 
 const mongoDbUrl = 'mongodb://localhost:27017/restaurant-game'
 
@@ -24,86 +25,60 @@ const pizzaDishes = [
         stringName: 'cheese pizza',
         price: 9.00,
         category: 'pizza-parlor',
-        ingredients: [
-            'pizza dough',
-            'marinara',
-            'mozzarella'
-        ]
     },
     {
         name: 'pepperoniPizza',
         stringName: 'pepperoni pizza',
         price: 9.50,
-        category: 'pizza-parlor',
-        ingredients: [
-            'pizza dough',
-            'marinara',
-            'mozzarella',
-            'pepperoni'
-        ]
+        category: 'pizza-parlor'
     },
     {
         name: 'meatLoversPizza',
         stringName: 'meat lovers pizza',
         price: 10.00,
-        category: 'pizza-parlor',
-        ingredients: [
-            'dough',
-            'marinara',
-            'mozzarella',
-            'pepperoni',
-            'sausage'
-        ]
+        category: 'pizza-parlor'
     }
 ]
 
 const createPizzas = async () => {
     for (let dish of pizzaDishes) {
         const pizza = new Dish({ ...dish })
+        const ingredients = await Ingredient.find({ dishes: pizza.name })
+        for (let i of ingredients) {
+            pizza.ingredients.push(i)
+        }
         await pizza.save()
     }
 }
-
 
 const iceCreamDishes = [
     {
         name: 'vanillaCone',
         stringName: 'vanilla cone',
         price: 2.00,
-        category: 'icecream-shop',
-        ingredients: [
-            'cone',
-            'scoop of vanilla',
-            'sprinkles'
-        ]
+        category: 'icecream-shop'
     },
     {
         name: 'chocolateCone',
         stringName: 'chocolate cone',
         price: 2.00,
-        category: 'icecream-shop',
-        ingredients: [
-            'cone',
-            'scoop of chocolate',
-            'sprinkles'
-        ]
+        category: 'icecream-shop'
     },
     {
         name: 'strawberryCone',
         stringName: 'strawberry cone',
         price: 2.00,
-        category: 'icecream-shop',
-        ingredients: [
-            'cone',
-            'scoop of strawberry',
-            'sprinkles'
-        ]
+        category: 'icecream-shop'
     },
 ]
 
 const createIceCream = async () => {
     for (let dish of iceCreamDishes) {
         const iceCream = new Dish({ ...dish })
+        const ingredients = await Ingredient.find({ dishes: iceCream.name })
+        for (let i of ingredients) {
+            iceCream.ingredients.push(i)
+        }
         await iceCream.save()
     }
 }
@@ -114,50 +89,32 @@ const burgerDishes = [
         name: 'hamburger',
         stringName: 'hamburger',
         price: 6.00,
-        category: 'burger-place',
-        ingredients: [
-            'bun',
-            'beef patty',
-            'lettuce',
-            'tomato'
-        ]
+        category: 'burger-place'
     },
     {
         name: 'cheeseburger',
         stringName: 'cheeseburger',
         price: 6.50,
-        category: 'burger-place',
-        ingredients: [
-            'bun',
-            'beef patty',
-            'cheddar',
-            'lettuce',
-            'tomato'
-        ]
+        category: 'burger-place'
     },
     {
         name: 'baconCheeseburger',
         stringName: 'bacon cheeseburger',
         price: 7.00,
-        category: 'burger-place',
-        ingredients: [
-            'bun',
-            'beef patty',
-            'cheddar',
-            'lettuce',
-            'tomato',
-            'bacon'
-        ]
+        category: 'burger-place'
     }
 ]
 
 const createBurgers = async () => {
     for (let dish of burgerDishes) {
         const burger = new Dish({ ...dish })
+        const ingredients = await Ingredient.find({ dishes: burger.name })
+        for (let i of ingredients) {
+            burger.ingredients.push(i)
+        }
         await burger.save()
     }
 }
-
 
 const createAllDishes = async () => {
     await Dish.deleteMany({})

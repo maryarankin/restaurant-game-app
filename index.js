@@ -33,6 +33,7 @@ mongoose.connection.once('open', () => {
 const Restaurant = require('./models/restaurant')
 const User = require('./models/user')
 const Dish = require('./models/dish')
+const Ingredient = require('./models/ingredient')
 
 
 

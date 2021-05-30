@@ -2,13 +2,11 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
-const DishSchema = new Schema({
+const IngredientSchema = new Schema({
     name: {
         type: String,
         required: true
     },
-
-    //REMOVE THIS LATER?
     stringName: {
         type: String,
         required: true
@@ -17,18 +15,17 @@ const DishSchema = new Schema({
         type: Number,
         required: true
     },
-
-    //MAKE THIS AN ENUM?
+    //change this to be the actual dishes themselves?:
+    dishes: [
+        {
+            type: String,
+            required: true
+        }
+    ],
     category: {
         type: String,
         required: true
-    },
-    ingredients: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Ingredient'
-        }
-    ]
+    }
 })
 
-module.exports = mongoose.model('Dish', DishSchema)
+module.exports = mongoose.model('Ingredient', IngredientSchema)
