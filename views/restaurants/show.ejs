@@ -99,31 +99,22 @@
                         </h5>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <% if (restaurant.type=="pizza-parlor" ) { %>
-                            <li class="list-group-item">NUMBER pizza dough</li>
-                            <li class="list-group-item">NUMBER jars of marinara</li>
-                            <li class="list-group-item">NUMBER mozzarella</li>
-                            <li class="list-group-item">NUMBER pepperoni</li>
-                            <li class="list-group-item">NUMBER sausage</li>
+                        <% for (i of ingredients) { %>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col">
+                                        <%= i.stringName %>: <%= i.quantity %>
+                                    </div>
+                                    <div class="col">
+                                        <form action="/ingredients/<%= restaurant._id %>/<%= i.name %>?_method=PUT"
+                                            method="POST">
+                                            <button class="btn btn-info">buy</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </li>
                             <% } %>
-
-                                <% if (restaurant.type=="icecream-shop" ) { %>
-                                    <li class="list-group-item">NUMBER waffle cones</li>
-                                    <li class="list-group-item">NUMBER scoops of vanilla</li>
-                                    <li class="list-group-item">NUMBER scoops of chocolate</li>
-                                    <li class="list-group-item">NUMBER scoops of strawberry</li>
-                                    <li class="list-group-item">NUMBER sprinkles</li>
-                                    <% } %>
-
-                                        <% if (restaurant.type=="burger-place" ) { %>
-                                            <li class="list-group-item">NUMBER buns</li>
-                                            <li class="list-group-item">NUMBER beef patties</li>
-                                            <li class="list-group-item">NUMBER slices of cheddar</li>
-                                            <li class="list-group-item">NUMBER lettuce</li>
-                                            <li class="list-group-item">NUMBER tomatoes</li>
-                                            <li class="list-group-item">NUMBER bacon</li>
-                                            <% } %>
-
                     </ul>
                     <div class="card-body">
                         <a href="#" class="card-link btn btn-light">buy</a>

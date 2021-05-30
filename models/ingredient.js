@@ -15,6 +15,10 @@ const IngredientSchema = new Schema({
         type: Number,
         required: true
     },
+    quantity: {
+        type: Number,
+        required: true
+    },
     //change this to be the actual dishes themselves?:
     dishes: [
         {

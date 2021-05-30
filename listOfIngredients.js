@@ -20,6 +20,7 @@ const pizzaIngredients = [
         name: 'dough',
         stringName: 'pizza dough',
         price: 0.25,
+        quantity: 0,
         dishes: [
             'cheesePizza',
             'pepperoniPizza',
@@ -31,6 +32,7 @@ const pizzaIngredients = [
         name: 'marinara',
         stringName: 'marinara sauce',
         price: 0.10,
+        quantity: 0,
         dishes: [
             'cheesePizza',
             'pepperoniPizza',
@@ -42,6 +44,7 @@ const pizzaIngredients = [
         name: 'mozzarella',
         stringName: 'mozzarella cheese',
         price: 0.10,
+        quantity: 0,
         dishes: [
             'cheesePizza',
             'pepperoniPizza',
@@ -53,6 +56,7 @@ const pizzaIngredients = [
         name: 'pepperoni',
         stringName: 'pepperoni',
         price: 0.05,
+        quantity: 0,
         dishes: [
             'pepperoniPizza',
             'meatLoversPizza'
@@ -63,6 +67,7 @@ const pizzaIngredients = [
         name: 'sausage',
         stringName: 'sausage',
         price: 0.10,
+        quantity: 0,
         dishes: [
             'meatLoversPizza'
         ],
@@ -82,6 +87,7 @@ const iceCreamIngredients = [
         name: 'cone',
         stringName: 'waffle cone',
         price: 0.25,
+        quantity: 0,
         dishes: [
             'vanillaCone',
             'chocolateCone',
@@ -93,6 +99,7 @@ const iceCreamIngredients = [
         name: 'strawberry',
         stringName: 'scoop of strawberry ice cream',
         price: 0.25,
+        quantity: 0,
         dishes: [
             'strawberryCone'
         ],
@@ -102,6 +109,7 @@ const iceCreamIngredients = [
         name: 'vanilla',
         stringName: 'scoop of vanilla ice cream',
         price: 0.25,
+        quantity: 0,
         dishes: [
             'vanillaCone'
         ],
@@ -111,6 +119,7 @@ const iceCreamIngredients = [
         name: 'chocolate',
         stringName: 'scoop of chocolate ice cream',
         price: 0.25,
+        quantity: 0,
         dishes: [
             'chocolateCone'
         ],
@@ -120,6 +129,7 @@ const iceCreamIngredients = [
         name: 'sprinkles',
         stringName: 'rainbow sprinkles',
         price: 0.05,
+        quantity: 0,
         dishes: [
             'vanillaCone',
             'chocolateCone',
@@ -141,6 +151,7 @@ const burgerIngredients = [
         name: 'bun',
         stringName: 'sesame bun',
         price: 0.10,
+        quantity: 0,
         dishes: [
             'hamburger',
             'cheeseburger',
@@ -152,6 +163,7 @@ const burgerIngredients = [
         name: 'beef',
         stringName: 'beef patty',
         price: 0.50,
+        quantity: 0,
         dishes: [
             'hamburger',
             'cheeseburger',
@@ -163,6 +175,7 @@ const burgerIngredients = [
         name: 'cheddar',
         stringName: 'slice of cheddar',
         price: 0.25,
+        quantity: 0,
         dishes: [
             'cheeseburger',
             'baconCheeseburger'
@@ -173,6 +186,7 @@ const burgerIngredients = [
         name: 'lettuce',
         stringName: 'lettuce',
         price: 0.05,
+        quantity: 0,
         dishes: [
             'hamburger',
             'cheeseburger',
@@ -184,6 +198,7 @@ const burgerIngredients = [
         name: 'tomato',
         stringName: 'slice of tomato',
         price: 0.05,
+        quantity: 0,
         dishes: [
             'hamburger',
             'cheeseburger',
@@ -195,6 +210,7 @@ const burgerIngredients = [
         name: 'bacon',
         stringName: 'strip of bacon',
         price: 0.25,
+        quantity: 0,
         dishes: [
             'baconCheeseburger'
         ],

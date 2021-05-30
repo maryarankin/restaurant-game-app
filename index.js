@@ -34,6 +34,7 @@ const Restaurant = require('./models/restaurant')
 const User = require('./models/user')
 const Dish = require('./models/dish')
 const Ingredient = require('./models/ingredient')
+const restaurant = require('./models/restaurant')
 
 
 
@@ -133,7 +134,8 @@ app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
     if (user.restaurants.includes(id)) {
         const restaurant = await Restaurant.findById(id).populate('dishes')
         const dishes = await Dish.find({ category: restaurant.type })  //change this so don't have to both populate AND find dishes - was working the other day but now isn't
-        res.render('restaurants/show', { restaurant, dishes })
+        const ingredients = await Ingredient.find({ category: restaurant.type })
+        res.render('restaurants/show', { restaurant, dishes, ingredients })
     }
     else {
         res.send('restaurant doesnt exist')
@@ -217,7 +219,7 @@ app.get('/logout', (req, res) => {
 
 app.get('/menu/:name', isLoggedIn, async (req, res) => {
     const { name } = req.params
-    const dish = await Dish.findOne({ name: name })  //when did with .find it wouldn't print dish.name, only dish
+    const dish = await Dish.findOne({ name: name }).populate('ingredients')  //when did with .find it wouldn't print dish.name, only dish
     res.render('dishes/show', { dish })
 })
 
@@ -229,6 +231,13 @@ app.put('/menu/:name', isLoggedIn, async (req, res) => {
     res.redirect(`/menu/${name}`)
 })
 
+app.put('/ingredients/:restaurantid/:name', isLoggedIn, async (req, res) => {
+    const { restaurantid, name } = req.params
+    const ingredient = await Ingredient.findOne({ name: name })
+    ingredient.quantity++
+    await ingredient.save()
+    res.redirect(`/restaurants/${restaurantid}`)
+})
 
 // EXPRESS PORT
 app.listen(3000, () => {
