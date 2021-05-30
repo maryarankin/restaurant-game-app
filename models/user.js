@@ -14,7 +14,10 @@ const UserSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Restaurant'
         }
-    ]
+    ],
+    money: {
+        type: Number,
+    }
 })
 
 //note: need to add fxnality to delete restaurants if user is deleted

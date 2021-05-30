@@ -191,6 +191,7 @@ app.post('/register', async (req, res, next) => {
     try {
         const { email, username, password } = req.body
         const user = new User({ email, username })
+        user.money = 500
         const registeredUser = await User.register(user, password)
         //log in user immediately:
         req.login(registeredUser, err => {
@@ -231,12 +232,65 @@ app.put('/menu/:name', isLoggedIn, async (req, res) => {
     res.redirect(`/menu/${name}`)
 })
 
-app.put('/ingredients/:restaurantid/:name', isLoggedIn, async (req, res) => {
-    const { restaurantid, name } = req.params
+app.put('/ingredients/:restaurantId/:name', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    const { restaurantId, name } = req.params
     const ingredient = await Ingredient.findOne({ name: name })
-    ingredient.quantity++
-    await ingredient.save()
-    res.redirect(`/restaurants/${restaurantid}`)
+    //change in case decimal precision isn't perfect
+    if (user.money >= ingredient.price) {
+        ingredient.quantity++
+        user.money -= ingredient.price
+        await ingredient.save()
+        await user.save()
+    }
+    res.redirect(`/restaurants/${restaurantId}`)
+})
+
+app.put('/endday', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    const restaurants = await Restaurant.find().populate('dishes').populate('ingredients') //see what .populates aren't working
+    for (let r of restaurants) {
+        const dishes = await Dish.find({ category: r.type })
+        for (let d of dishes) {
+            user.money += (d.quantity * d.price)
+            d.quantity = 0
+            await user.save()
+            await d.save()
+
+            //ADD FUNCTIONALITY FOR PROFIT:
+            //find ingredients for each dish b/c .populate not working
+            // dishProfit = d.price //and have a variable overall for restaurantProfit
+            // for (let i of d.ingredients) {
+            // dishProfit -= i.price
+            // }
+        }
+    }
+    res.redirect('/restaurants')
+})
+
+app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
+    const { restaurantId, dishId } = req.params
+    const dish = await Dish.findById(dishId).populate('ingredients')
+    const ingredients = dish.ingredients
+    let haveAllIngredients = true
+    for (let i of ingredients) {
+        if (i.quantity == 0) {
+            haveAllIngredients = false
+            break
+        }
+    }
+    if (haveAllIngredients) {
+        for (let i of ingredients) {
+            i.quantity--
+            await i.save()
+        }
+        dish.quantity++
+        await dish.save()
+        res.redirect(`/restaurants/${restaurantId}`)
+    }
+    else {
+        res.send('need to buy ingredients')
+    }
 })
 
 // EXPRESS PORT

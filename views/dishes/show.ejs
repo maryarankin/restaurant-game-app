@@ -20,11 +20,11 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <strong>price: $<%= dish.price %></strong>
+                        <strong>price: $<%= dish.price.toFixed(2) %></strong>
                         <div>
                             <form action="/menu/<%= dish.name %>?_method=PUT" method="POST">
                                 <label for="price">update price: $</label>
-                                <input type="number" id="price" name="dish[price]">
+                                <input type="number" min="0" step=".01" id="price" name="dish[price]">
                                 <button class="btn btn-info">submit</button>
                             </form>
                         </div>

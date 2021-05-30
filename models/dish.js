@@ -17,6 +17,10 @@ const DishSchema = new Schema({
         type: Number,
         required: true
     },
+    quantity: {
+        type: Number,
+        required: true
+    },
 
     //MAKE THIS AN ENUM?
     category: {
