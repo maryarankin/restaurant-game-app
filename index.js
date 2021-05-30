@@ -214,12 +214,19 @@ app.get('/logout', (req, res) => {
     res.redirect('/restaurants')
 })
 
-app.get('/menu/:name', async (req, res) => {
+app.get('/menu/:name', isLoggedIn, async (req, res) => {
     const { name } = req.params
     const dish = await Dish.findOne({ name: name })  //when did with .find it wouldn't print dish.name, only dish
     res.render('dishes/show', { dish })
 })
 
+app.put('/menu/:name', isLoggedIn, async (req, res) => {
+    const { name } = req.params
+    const dish = await Dish.findOne({ name: name })
+    dish.price = req.body.dish.price
+    await dish.save()
+    res.redirect(`/menu/${name}`)
+})
 
 
 // EXPRESS PORT

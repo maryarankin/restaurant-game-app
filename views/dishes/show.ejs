@@ -10,8 +10,6 @@
 
         <div class="col">
             <div class="card bg-warning">
-
-
                 <div class="card-body">
                     <h5 class="card-title">
                         <%= dish.stringName %>
@@ -22,8 +20,14 @@
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <strong>price: $<%= dish.price %></strong> <button type="button" class="btn btn-info"
-                            id="price">increase</button>
+                        <strong>price: $<%= dish.price %></strong>
+                        <div>
+                            <form action="/menu/<%= dish.name %>?_method=PUT" method="POST">
+                                <label for="price">update price: $</label>
+                                <input type="number" id="price" name="dish[price]">
+                                <button class="btn btn-info">submit</button>
+                            </form>
+                        </div>
                     </li>
                     <li class="list-group-item"><strong>ingredients:</strong>
                     </li>
@@ -38,6 +42,5 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="/javascript/increasePrice.js"></script>
+    </div>
