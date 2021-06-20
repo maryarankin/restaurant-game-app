@@ -1,0 +1,55 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="container mt-3">
+        <div id="header">
+            <h1>welcome!</h1>
+            <p>so you want to start a business? in the <em>restaurant</em> industry? you think it'll be easy? we'll see
+                about that...</p>
+        </div>
+        <div id="pick-rest-type" class="mt-5">
+            <h1 class="text-center">what kind of grub ya slingin?</h1>
+
+            <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+                <div class="col">
+                    <div class="card bg-warning">
+                        <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
+                            class="card-img-top" alt="pizza">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <form action="/choose/pizza-parlor" method="POST">
+                                    <button class="btn btn-light btn-lg">pizza parlor</button>
+                                </form>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card bg-warning">
+                        <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1100&q=80"
+                            class="card-img-top" alt="pizza">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <form action="/choose/burger-place" method="POST">
+                                    <button class="btn btn-light btn-lg">burger place</button>
+                                </form>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card bg-warning">
+                        <img src="https://images.unsplash.com/photo-1505394033641-40c6ad1178d7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1106&q=80"
+                            class="card-img-top" alt="pizza">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <form action="/choose/icecream-shop" method="POST">
+                                    <button class="btn btn-light btn-lg">ice cream shop</button>
+                                </form>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

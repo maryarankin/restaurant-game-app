@@ -38,6 +38,11 @@ const restaurant = require('./models/restaurant')
 
 
 
+// DISHES DATA
+const dishesData = require('./newListOfDishes')
+
+
+
 // VIEW ENGINE/EJS
 app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs')
@@ -94,6 +99,10 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
+app.get('/start', (req, res) => {
+    res.render('start')
+})
+
 //DO .POPULATE INSTEAD:
 app.get('/restaurants', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
@@ -114,14 +123,39 @@ app.get('/restaurants/new', isLoggedIn, (req, res) => {
 app.post('/restaurants', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
     const restaurant = new Restaurant(req.body.restaurant)
+    const type = user.restauranttypes[0] //CHANGE THIS ONCE THEY UNLOCK MORE RESTAURANT TYPES
+    restaurant.type = type
     restaurant.numEmployees = 0
     restaurant.profit = 0
     restaurant.rating = 1
-    const dishes = await Dish.find({ category: restaurant.type })
-    //change this syntax:
-    for (let dish of dishes) {
-        restaurant.dishes.push(dish)
+    //create new instances of the dishes each time creating new restaurant so each can have their own prices
+    let dishType = null
+    if (restaurant.type == 'pizza-parlor') {
+        dishType = dishesData.pizzaDishes
     }
+    else if (restaurant.type == 'burger-place') {
+        dishType = dishesData.burgerDishes
+    }
+    else {
+        dishType = dishesData.iceCreamDishes
+    }
+
+    for (let dish of dishType) {
+        const newDish = new Dish({ ...dish })
+        const ingredients = await Ingredient.find({ dishes: newDish.name })
+        for (let i of ingredients) {
+            newDish.ingredients.push(i)
+        }
+        newDish.restaurant = restaurant
+        await newDish.save()
+        restaurant.dishes.push(newDish)
+    }
+
+    // const dishes = await Dish.find({ category: restaurant.type })
+    // //change this syntax:
+    // for (let dish of dishes) {
+    //     restaurant.dishes.push(dish)
+    // }
     await restaurant.save()
     user.restaurants.push(restaurant)
     await user.save()
@@ -133,7 +167,7 @@ app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params
     if (user.restaurants.includes(id)) {
         const restaurant = await Restaurant.findById(id).populate('dishes')
-        const dishes = await Dish.find({ category: restaurant.type })  //change this so don't have to both populate AND find dishes - was working the other day but now isn't
+        const dishes = await Dish.find({ restaurant: restaurant })  //change this so don't have to both populate AND find dishes - was working the other day but now isn't
         const ingredients = await Ingredient.find({ category: restaurant.type })
         res.render('restaurants/show', { restaurant, dishes, ingredients })
     }
@@ -191,12 +225,12 @@ app.post('/register', async (req, res, next) => {
     try {
         const { email, username, password } = req.body
         const user = new User({ email, username })
-        user.money = 500
+        user.money = 0
         const registeredUser = await User.register(user, password)
         //log in user immediately:
         req.login(registeredUser, err => {
             if (err) return next(err)
-            res.redirect('/restaurants')
+            res.redirect('/start')
         })
     } catch (e) {
         res.redirect('register')
@@ -218,18 +252,32 @@ app.get('/logout', (req, res) => {
     res.redirect('/restaurants')
 })
 
-app.get('/menu/:name', isLoggedIn, async (req, res) => {
-    const { name } = req.params
-    const dish = await Dish.findOne({ name: name }).populate('ingredients')  //when did with .find it wouldn't print dish.name, only dish
+app.post('/choose/:type', isLoggedIn, async (req, res) => {
+    const { type } = req.params
+    const user = await User.findById(res.locals.currentUser._id)
+    if (user.restauranttypes[0] == null) {
+        user.restauranttypes.push(type)
+        await user.save()
+        res.render('restaurants/new')
+    }
+    else {
+        const errorMsg = 'you have already picked a restaurant type'
+        res.render('error', { errorMsg })
+    }
+})
+
+app.get('/menu/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params
+    const dish = await Dish.findById(id).populate('ingredients')  //when did with .find it wouldn't print dish.name, only dish
     res.render('dishes/show', { dish })
 })
 
-app.put('/menu/:name', isLoggedIn, async (req, res) => {
-    const { name } = req.params
-    const dish = await Dish.findOne({ name: name })
+app.put('/menu/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params
+    const dish = await Dish.findById(id)
     dish.price = req.body.dish.price
     await dish.save()
-    res.redirect(`/menu/${name}`)
+    res.redirect(`/menu/${id}`)
 })
 
 app.put('/ingredients/:restaurantId/:name', isLoggedIn, async (req, res) => {

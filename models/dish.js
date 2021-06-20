@@ -27,6 +27,10 @@ const DishSchema = new Schema({
         type: String,
         required: true
     },
+    restaurant: {
+        type: Schema.Types.ObjectId,
+        ref: 'Restaurant'
+    },
     ingredients: [
         {
             type: Schema.Types.ObjectId,

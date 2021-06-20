@@ -22,7 +22,7 @@
                     <li class="list-group-item">
                         <strong>price: $<%= dish.price.toFixed(2) %></strong>
                         <div>
-                            <form action="/menu/<%= dish.name %>?_method=PUT" method="POST">
+                            <form action="/menu/<%= dish._id %>?_method=PUT" method="POST">
                                 <label for="price">update price: $</label>
                                 <input type="number" min="0" step=".01" id="price" name="dish[price]">
                                 <button class="btn btn-info">submit</button>

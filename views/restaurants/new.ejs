@@ -15,6 +15,7 @@
                             placeholder="restaurant name">
                     </div>
 
+                    <!--HAVE THIS SHOW ONLY IF HAS UNLOCKED MULTIPLE RESTAURANT TYPES
                     <div class="mb-3">
                         <label for="type" class="form-label">what type of grub ya slingin'?</label>
                         <select class="form-select" id="type" name="restaurant[type]">
@@ -22,12 +23,15 @@
                             <option value="icecream-shop">ice cream shop</option>
                             <option value="burger-place">burger place</option>
                         </select>
-                    </div>
+                    </div>-->
 
                     <div class="mb-3">
                         <label for="location" class="form-label">where at?</label>
-                        <input class="form-control" type="text" id="location" name="restaurant[location]"
-                            placeholder="location">
+                        <select class="form-select" id="location" name="restaurant[location]">
+                            <option value="city">city</option>
+                            <option value="suburbs">suburbs</option>
+                            <option value="countryside">countryside</option>
+                        </select>
                     </div>
 
                     <button class="btn btn-info">let's go</button>

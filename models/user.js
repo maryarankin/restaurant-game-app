@@ -9,6 +9,11 @@ const UserSchema = new Schema({
         required: true,
         unique: true
     },
+    restauranttypes: [
+        {
+            type: String
+        }
+    ],
     restaurants: [
         {
             type: Schema.Types.ObjectId,
