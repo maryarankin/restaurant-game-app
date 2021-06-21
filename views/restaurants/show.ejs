@@ -28,7 +28,7 @@
 
                                             <div class="card-body">
                                                 <h5 class="card-title">
-                                                    <%= restaurant.name %>, <%= restaurant.location %>
+                                                    <%= restaurant.name %>
                                                 </h5>
                                                 <p class="card-text">things are going well at <%= restaurant.name %>.
                                                         keep
@@ -51,6 +51,9 @@
                                                                         burger place
                                                                         <% } %>
 
+                                                </li>
+                                                <li class="list-group-item">
+                                                    location: <%= restaurant.location %>
                                                 </li>
                                                 <li class="list-group-item">profit: <%= restaurant.profit %>
                                                 </li>

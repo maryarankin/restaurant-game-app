@@ -38,8 +38,9 @@ const restaurant = require('./models/restaurant')
 
 
 
-// DISHES DATA
+// DISHES & INGREDIENTS DATA
 const dishesData = require('./newListOfDishes')
+const ingredientsData = require('./newListOfIngredients')
 
 
 
@@ -121,7 +122,7 @@ app.get('/restaurants/new', isLoggedIn, (req, res) => {
 })
 
 app.post('/restaurants', isLoggedIn, async (req, res) => {
-    const user = await User.findById(res.locals.currentUser._id)
+    const user = await User.findById(res.locals.currentUser._id).populate('ingredients')
     const restaurant = new Restaurant(req.body.restaurant)
     const type = user.restauranttypes[0] //CHANGE THIS ONCE THEY UNLOCK MORE RESTAURANT TYPES
     restaurant.type = type
@@ -142,9 +143,11 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
 
     for (let dish of dishType) {
         const newDish = new Dish({ ...dish })
-        const ingredients = await Ingredient.find({ dishes: newDish.name })
+        const ingredients = user.ingredients
         for (let i of ingredients) {
-            newDish.ingredients.push(i)
+            if (i.dishes.includes(dish.name)) {
+                newDish.ingredients.push(i)
+            }
         }
         newDish.restaurant = restaurant
         await newDish.save()
@@ -163,12 +166,17 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
 })
 
 app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
-    const user = await User.findById(res.locals.currentUser._id)
+    const user = await User.findById(res.locals.currentUser._id).populate('ingredients')
     const { id } = req.params
     if (user.restaurants.includes(id)) {
         const restaurant = await Restaurant.findById(id).populate('dishes')
         const dishes = await Dish.find({ restaurant: restaurant })  //change this so don't have to both populate AND find dishes - was working the other day but now isn't
-        const ingredients = await Ingredient.find({ category: restaurant.type })
+        const ingredients = user.ingredients
+        for (let i = 0; i < ingredients.length; i++) {
+            if (ingredients[i].category !== restaurant.type) {
+                ingredients.splice(i)
+            }
+        }
         res.render('restaurants/show', { restaurant, dishes, ingredients })
     }
     else {
@@ -226,6 +234,7 @@ app.post('/register', async (req, res, next) => {
         const { email, username, password } = req.body
         const user = new User({ email, username })
         user.money = 0
+        user.day = 0
         const registeredUser = await User.register(user, password)
         //log in user immediately:
         req.login(registeredUser, err => {
@@ -257,6 +266,25 @@ app.post('/choose/:type', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
     if (user.restauranttypes[0] == null) {
         user.restauranttypes.push(type)
+
+        let ingredients = null
+        if (type == 'pizza-parlor') {
+            ingredients = ingredientsData.pizzaIngredients
+        }
+        else if (type == 'burger-place') {
+            ingredients = ingredientsData.burgerIngredients
+        }
+        else {
+            ingredients = ingredientsData.iceCreamIngredients
+        }
+
+        for (let i of ingredients) {
+            const newIngredient = new Ingredient({ ...i })
+            newIngredient.quantity = 1
+            await newIngredient.save()
+            user.ingredients.push(newIngredient)
+        }
+
         await user.save()
         res.render('restaurants/new')
     }
@@ -281,9 +309,16 @@ app.put('/menu/:id', isLoggedIn, async (req, res) => {
 })
 
 app.put('/ingredients/:restaurantId/:name', isLoggedIn, async (req, res) => {
-    const user = await User.findById(res.locals.currentUser._id)
+    const user = await User.findById(res.locals.currentUser._id).populate('ingredients')
     const { restaurantId, name } = req.params
-    const ingredient = await Ingredient.findOne({ name: name })
+    const ingredients = user.ingredients
+    let ingredient = null
+    for (let i = 0; i < ingredients.length; i++) {
+        if (ingredients[i].name == name) {
+            ingredient = ingredients[i]
+        }
+    }
+
     //change in case decimal precision isn't perfect
     if (user.money >= ingredient.price) {
         ingredient.quantity++
@@ -302,7 +337,6 @@ app.put('/endday', isLoggedIn, async (req, res) => {
         for (let d of dishes) {
             user.money += (d.quantity * d.price)
             d.quantity = 0
-            await user.save()
             await d.save()
 
             //ADD FUNCTIONALITY FOR PROFIT:
@@ -313,6 +347,8 @@ app.put('/endday', isLoggedIn, async (req, res) => {
             // }
         }
     }
+    user.day++
+    await user.save()
     res.redirect('/restaurants')
 })
 

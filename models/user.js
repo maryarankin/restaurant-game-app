@@ -22,6 +22,16 @@ const UserSchema = new Schema({
     ],
     money: {
         type: Number,
+    },
+    ingredients: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Ingredient'
+        }
+    ],
+    day: {
+        type: Number,
+        required: true
     }
 })
 
