@@ -34,7 +34,6 @@ const Restaurant = require('./models/restaurant')
 const User = require('./models/user')
 const Dish = require('./models/dish')
 const Ingredient = require('./models/ingredient')
-const restaurant = require('./models/restaurant')
 
 
 
@@ -100,7 +99,7 @@ app.get('/', (req, res) => {
     res.render('home')
 })
 
-app.get('/start', (req, res) => {
+app.get('/start', isLoggedIn, (req, res) => {
     res.render('start')
 })
 
@@ -234,7 +233,7 @@ app.post('/register', async (req, res, next) => {
         const { email, username, password } = req.body
         const user = new User({ email, username })
         user.money = 0
-        user.day = 0
+        user.day = 1
         const registeredUser = await User.register(user, password)
         //log in user immediately:
         req.login(registeredUser, err => {
@@ -330,10 +329,10 @@ app.put('/ingredients/:restaurantId/:name', isLoggedIn, async (req, res) => {
 })
 
 app.put('/endday', isLoggedIn, async (req, res) => {
-    const user = await User.findById(res.locals.currentUser._id)
-    const restaurants = await Restaurant.find().populate('dishes').populate('ingredients') //see what .populates aren't working
+    const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
+    const restaurants = user.restaurants
     for (let r of restaurants) {
-        const dishes = await Dish.find({ category: r.type })
+        const dishes = await Dish.find({ restaurant: r })
         for (let d of dishes) {
             user.money += (d.quantity * d.price)
             d.quantity = 0
