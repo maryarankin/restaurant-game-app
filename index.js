@@ -179,7 +179,8 @@ app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
         res.render('restaurants/show', { restaurant, dishes, ingredients })
     }
     else {
-        res.send('restaurant doesnt exist')
+        const errorMsg = 'restaurant does not exist'
+        res.render('error', { errorMsg })
     }
 })
 
@@ -191,7 +192,8 @@ app.get('/restaurants/:id/edit', isLoggedIn, async (req, res) => {
         res.render('restaurants/edit', { restaurant })
     }
     else {
-        res.send('restaurant doesnt exist')
+        const errorMsg = 'restaurant does not exist'
+        res.render('error', { errorMsg })
     }
 })
 
@@ -206,7 +208,8 @@ app.put('/restaurants/:id', isLoggedIn, async (req, res) => {
         res.redirect(`/restaurants/${restaurant._id}`)
     }
     else {
-        res.send('restaurant doesnt exist')
+        const errorMsg = 'restaurant does not exist'
+        res.render('error', { errorMsg })
     }
 })
 
@@ -220,7 +223,8 @@ app.delete('/restaurants/:id', isLoggedIn, async (req, res) => {
         res.redirect('/restaurants')
     }
     else {
-        res.send('restaurant doesnt exist')
+        const errorMsg = 'restaurant does not exist'
+        res.render('error', { errorMsg })
     }
 })
 
@@ -371,8 +375,9 @@ app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
         await dish.save()
         res.redirect(`/restaurants/${restaurantId}`)
     }
-    else {
-        res.send('need to buy ingredients')
+    else { //CHANGE THIS TO A FLASH MESSAGE LATER
+        const errorMsg = 'need to buy ingredients'
+        res.render('error', { errorMsg })
     }
 })
 

@@ -16,10 +16,6 @@ const RestaurantSchema = new Schema({
         type: String,
         required: true
     },
-    menu: {
-        type: [String],
-        required: true
-    },
     numEmployees: {
         type: Number,
         required: true
