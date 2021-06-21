@@ -36,7 +36,11 @@ const DishSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Ingredient'
         }
-    ]
+    ],
+    numberSold: {
+        type: Number,
+        required: true
+    }
 })
 
 module.exports = mongoose.model('Dish', DishSchema)

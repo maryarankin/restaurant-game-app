@@ -53,7 +53,14 @@
 
                                                 </li>
                                                 <li class="list-group-item">
+                                                    opened: month <%= restaurant.monthOpened %> day <%=
+                                                            restaurant.dayOpened %>
+                                                </li>
+                                                <li class="list-group-item">
                                                     location: <%= restaurant.location %>
+                                                </li>
+                                                <li class="list-group-item">rent: $<%= restaurant.rent %>/month (due in
+                                                        <%= (31 - user.day) %> days)
                                                 </li>
                                                 <li class="list-group-item">profit: $<%= restaurant.profit.toFixed(2) %>
                                                 </li>

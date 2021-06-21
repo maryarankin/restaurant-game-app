@@ -116,8 +116,9 @@ app.get('/restaurants', isLoggedIn, async (req, res) => {
     res.render('restaurants/index', { restaurants })
 })
 
-app.get('/restaurants/new', isLoggedIn, (req, res) => {
-    res.render('restaurants/new')
+app.get('/restaurants/new', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    res.render('restaurants/new', { user })
 })
 
 app.post('/restaurants', isLoggedIn, async (req, res) => {
@@ -125,6 +126,17 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
     const restaurant = new Restaurant(req.body.restaurant)
     const type = user.restauranttypes[0] //CHANGE THIS ONCE THEY UNLOCK MORE RESTAURANT TYPES
     restaurant.type = type
+    restaurant.monthOpened = user.month
+    restaurant.dayOpened = user.day
+    if (restaurant.location == 'city') {
+        restaurant.rent = 150
+    }
+    else if (restaurant.location == 'suburbs') {
+        restaurant.rent = 100
+    }
+    else {
+        restaurant.rent = 50
+    }
     restaurant.numEmployees = 0
     restaurant.profit = 0
     restaurant.rating = 1
@@ -149,6 +161,7 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
             }
         }
         newDish.restaurant = restaurant
+        newDish.numberSold = 0
         await newDish.save()
         restaurant.dishes.push(newDish)
     }
@@ -176,7 +189,7 @@ app.get('/restaurants/:id', isLoggedIn, async (req, res) => {
                 ingredients.splice(i)
             }
         }
-        res.render('restaurants/show', { restaurant, dishes, ingredients })
+        res.render('restaurants/show', { restaurant, dishes, ingredients, user })
     }
     else {
         const errorMsg = 'restaurant does not exist'
@@ -237,6 +250,7 @@ app.post('/register', async (req, res, next) => {
         const { email, username, password } = req.body
         const user = new User({ email, username })
         user.money = 0
+        user.month = 1
         user.day = 1
         const registeredUser = await User.register(user, password)
         //log in user immediately:
@@ -353,6 +367,7 @@ app.put('/endday', isLoggedIn, async (req, res) => {
 
             restaurantProfit += (d.quantity * d.price) - ingredientCost
             user.money += (d.quantity * d.price)
+            d.numberSold += d.quantity
             d.quantity = 0
             await d.save()
         }
@@ -360,6 +375,21 @@ app.put('/endday', isLoggedIn, async (req, res) => {
         await r.save()
     }
     user.day++
+    //if end of month
+    if (user.day > 30) {
+        //pay rent
+        for (let r of restaurants) {
+            //pro-rate if opened mid-month:
+            if (r.monthOpened == user.month) {
+                user.money -= ((r.rent * (31 - r.dayOpened)) / 30)  //31 b/c if opened first day of month, charge for whole month
+            }
+            else {
+                user.money -= r.rent
+            }
+        }
+        user.month++
+        user.day = 1
+    }
     await user.save()
     res.redirect('/restaurants')
 })

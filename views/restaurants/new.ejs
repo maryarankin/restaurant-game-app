@@ -28,13 +28,20 @@
                     <div class="mb-3">
                         <label for="location" class="form-label">where at?</label>
                         <select class="form-select" id="location" name="restaurant[location]">
-                            <option value="city">city</option>
-                            <option value="suburbs">suburbs</option>
-                            <option value="countryside">countryside</option>
+                            <option value="city">city (rent: $150)</option>
+                            <option value="suburbs">suburbs (rent: $100)</option>
+                            <option value="countryside">countryside (rent: $50)</option>
                         </select>
                     </div>
+                    <% if (user.day> 1) { %>
+                        <div class="mb=3">
+                            <p>your rent will be pro-rated for this month so you'll only owe for <%= 31 - user.day %>
+                                    days
+                            </p>
+                        </div>
+                        <% } %>
 
-                    <button class="btn btn-info">let's go</button>
+                            <button class="btn btn-info">let's go</button>
                 </form>
             </div>
         </div>

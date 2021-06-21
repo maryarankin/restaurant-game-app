@@ -29,6 +29,10 @@ const UserSchema = new Schema({
             ref: 'Ingredient'
         }
     ],
+    month: {
+        type: Number,
+        required: true
+    },
     day: {
         type: Number,
         required: true

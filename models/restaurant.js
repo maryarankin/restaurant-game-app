@@ -16,6 +16,10 @@ const RestaurantSchema = new Schema({
         type: String,
         required: true
     },
+    rent: {
+        type: Number,
+        required: true
+    },
     numEmployees: {
         type: Number,
         required: true
@@ -33,7 +37,15 @@ const RestaurantSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Dish'
         }
-    ]
+    ],
+    monthOpened: {
+        type: Number,
+        required: true
+    },
+    dayOpened: {
+        type: Number,
+        required: true
+    }
 })
 
 module.exports = mongoose.model('Restaurant', RestaurantSchema)
