@@ -3,9 +3,9 @@
     <div class="container mt-3">
 
         <div class="my-3">
-            <!-- CHANGE TO "BACK TO RESTAURANT" BUTTON -->
-            <a href="/restaurants"><button type="button" class="btn btn-info">back to
-                    all</button></a>
+            <a href="/restaurants/<%= restaurant._id %>"><button type="button" class="btn btn-info">back to
+                    <%= restaurant.name %>
+                </button></a>
         </div>
 
         <div class="col">
@@ -22,7 +22,7 @@
                     <li class="list-group-item">
                         <strong>price: $<%= dish.price.toFixed(2) %></strong>
                         <div>
-                            <form action="/menu/<%= dish._id %>?_method=PUT" method="POST">
+                            <form action="/<%= restaurant._id %>/menu/<%= dish._id %>?_method=PUT" method="POST">
                                 <label for="price">update price: $</label>
                                 <input type="number" min="0" step=".01" id="price" name="dish[price]">
                                 <button class="btn btn-info">submit</button>
@@ -47,7 +47,7 @@
                             </li>
                 </ul>
                 <div class="card-body">
-                    <form action="/buyall/<%= dish._id %>?_method=PUT" method="POST">
+                    <form action="/<%= restaurant._id %>/buyall/<%= dish._id %>?_method=PUT" method="POST">
                         <button class="card-link btn btn-light">buy all ingredients to make 1 <%= dish.stringName %>
                         </button>
                     </form>

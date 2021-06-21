@@ -131,14 +131,17 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
     restaurant.dayOpened = user.day
     if (restaurant.location == 'city') {
         restaurant.rent = 150
+        restaurant.employeePay = 45
     }
     else if (restaurant.location == 'suburbs') {
         restaurant.rent = 100
+        restaurant.employeePay = 30
     }
     else {
         restaurant.rent = 50
+        restaurant.employeePay = 15
     }
-    restaurant.numEmployees = 0
+    restaurant.numEmployees = 1
     restaurant.profit = 0
     restaurant.rating = 1
     //create new instances of the dishes each time creating new restaurant so each can have their own prices
@@ -242,6 +245,12 @@ app.delete('/restaurants/:id', isLoggedIn, async (req, res) => {
     }
 })
 
+app.get('/:restaurantId/employees', isLoggedIn, async (req, res) => {
+    const { restaurantId } = req.params
+    const restaurant = await Restaurant.findById(restaurantId)
+    res.render('employee', { restaurant })
+})
+
 app.get('/register', (req, res) => {
     res.render('users/register')
 })
@@ -260,7 +269,7 @@ app.post('/register', async (req, res, next) => {
             res.redirect('/start')
         })
     } catch (e) {
-        res.redirect('register')
+        res.redirect('/register')
     }
 })
 
@@ -323,15 +332,16 @@ app.get('/welcome/createnew', isLoggedIn, async (req, res) => {
     res.render('restaurants/new', { user })
 })
 
-app.get('/menu/:id', isLoggedIn, async (req, res) => {
-    const { id } = req.params
-    const dish = await Dish.findById(id).populate('ingredients')  //when did with .find it wouldn't print dish.name, only dish
-    res.render('dishes/show', { dish })
+app.get('/:restaurantId/menu/:dishId', isLoggedIn, async (req, res) => {
+    const { restaurantId, dishId } = req.params
+    const dish = await Dish.findById(dishId).populate('ingredients')  //when did with .find it wouldn't print dish.name, only dish
+    const restaurant = await Restaurant.findById(restaurantId)
+    res.render('dishes/show', { dish, restaurant })
 })
 
-app.put('/buyall/:dishId', isLoggedIn, async (req, res) => {
+app.put('/:restaurantId/buyall/:dishId', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
-    const { dishId } = req.params
+    const { restaurantId, dishId } = req.params
     const dish = await Dish.findById(dishId).populate('ingredients')
     const ingredients = dish.ingredients
     let totalIngredientPrice = 0
@@ -346,15 +356,15 @@ app.put('/buyall/:dishId', isLoggedIn, async (req, res) => {
         }
         await user.save()
     }
-    res.redirect(`/menu/${dishId}`)
+    res.redirect(`/${restaurantId}/menu/${dishId}`)
 })
 
-app.put('/menu/:id', isLoggedIn, async (req, res) => {
-    const { id } = req.params
+app.put('/:restaurantId/menu/:id', isLoggedIn, async (req, res) => {
+    const { restaurantId, id } = req.params
     const dish = await Dish.findById(id)
     dish.price = req.body.dish.price
     await dish.save()
-    res.redirect(`/menu/${id}`)
+    res.redirect(`/${restaurantId}/menu/${id}`)
 })
 
 app.put('/ingredients/:restaurantId/:name', isLoggedIn, async (req, res) => {
@@ -376,6 +386,22 @@ app.put('/ingredients/:restaurantId/:name', isLoggedIn, async (req, res) => {
         await user.save()
     }
     res.redirect(`/restaurants/${restaurantId}`)
+})
+
+app.put('/:restaurantId/hire', isLoggedIn, async (req, res) => {
+    const { restaurantId } = req.params
+    const restaurant = await Restaurant.findById(restaurantId)
+    restaurant.numEmployees++
+    await restaurant.save()
+    res.redirect(`/restaurants/${restaurant._id}`)
+})
+
+app.put('/:restaurantId/employees/hire', isLoggedIn, async (req, res) => {
+    const { restaurantId } = req.params
+    const restaurant = await Restaurant.findById(restaurantId)
+    restaurant.numEmployees++
+    await restaurant.save()
+    res.redirect(`/${restaurant._id}/employees`)
 })
 
 app.put('/endday', isLoggedIn, async (req, res) => {
@@ -407,6 +433,14 @@ app.put('/endday', isLoggedIn, async (req, res) => {
         await r.save()
     }
     user.day++
+
+    //paying employees
+    if (user.day == 16 || user.day == 31) {
+        for (let r of restaurants) {
+            user.money -= (r.numEmployees * r.employeePay)
+        }
+    }
+
     //if end of month
     if (user.day > 30) {
         //pay rent
@@ -428,6 +462,19 @@ app.put('/endday', isLoggedIn, async (req, res) => {
 
 app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
     const { restaurantId, dishId } = req.params
+
+    const restaurant = await Restaurant.findById(restaurantId).populate('dishes')
+    const restaurantDishes = restaurant.dishes
+
+    let totalDishNum = 0
+    for (let dish of restaurantDishes) {
+        totalDishNum += dish.quantity
+    }
+    let metWorkLimit = false
+    if ((restaurant.numEmployees * 5) <= totalDishNum) {
+        metWorkLimit = true
+    }
+
     const dish = await Dish.findById(dishId).populate('ingredients')
     const ingredients = dish.ingredients
     let haveAllIngredients = true
@@ -437,7 +484,8 @@ app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
             break
         }
     }
-    if (haveAllIngredients) {
+
+    if (haveAllIngredients && !metWorkLimit) {
         for (let i of ingredients) {
             i.quantity--
             await i.save()
@@ -446,8 +494,12 @@ app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
         await dish.save()
         res.redirect(`/restaurants/${restaurantId}`)
     }
-    else { //CHANGE THIS TO A FLASH MESSAGE LATER
+    else if (!haveAllIngredients) { //CHANGE THIS TO A FLASH MESSAGE LATER
         const errorMsg = 'need to buy ingredients'
+        res.render('error', { errorMsg })
+    }
+    else {
+        const errorMsg = 'employees cannot make any more food. hire more employees'
         res.render('error', { errorMsg })
     }
 })

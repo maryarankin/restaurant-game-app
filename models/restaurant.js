@@ -24,6 +24,10 @@ const RestaurantSchema = new Schema({
         type: Number,
         required: true
     },
+    employeePay: {
+        type: Number,
+        required: true
+    },
     profit: {
         type: Number,
         required: true

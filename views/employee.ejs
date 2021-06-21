@@ -1,0 +1,36 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="container mt-3">
+
+        <div class="my-3">
+            <a href="/restaurants/<%= restaurant._id %>" class="btn btn-info">back</a>
+        </div>
+
+        <div class="col">
+            <div class="card bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        staff at <%= restaurant.name %>
+                    </h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <strong>number of employees:</strong>
+                        <%= restaurant.numEmployees %>
+                    </li>
+                    <li class="list-group-item"><strong>wage:</strong>
+                        $<%= restaurant.employeePay.toFixed(2) %>/employee
+                    </li>
+                    <li class="list-group-item"><strong>work limit per employee:</strong> 5 dishes/day
+                    </li>
+                    <li class="list-group-item"><strong>total number of dishes made at <%= restaurant.name %>:
+                        </strong></li>
+                </ul>
+                <div class="card-body">
+                    <form action="/<%= restaurant._id %>/employees/hire?_method=PUT" method="POST">
+                        <button class="card-link btn btn-light">hire new employee</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

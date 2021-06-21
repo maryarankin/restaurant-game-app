@@ -59,24 +59,52 @@
                                                 <li class="list-group-item">
                                                     location: <%= restaurant.location %>
                                                 </li>
-                                                <li class="list-group-item">rent: $<%= restaurant.rent %>/month (due in
-                                                        <%= (31 - user.day) %> days)
+                                                <li class="list-group-item">rent: $<%= restaurant.rent %>/month
+                                                        <% let rentDue=(31 - user.day) %>
+                                                            <% if (rentDue==1) { %>
+                                                                (due in <%= rentDue %> day)
+                                                                    <% } else { %>
+                                                                        (due in <%= (31 - user.day) %> days)
+                                                                            <% } %>
                                                 </li>
                                                 <li class="list-group-item">profit: $<%= restaurant.profit.toFixed(2) %>
                                                 </li>
                                                 <li class="list-group-item">rating: <%= restaurant.rating %>
                                                 </li>
-                                                <li class="list-group-item">employees: <%= restaurant.numEmployees %>
+                                                <li class="list-group-item">employees: <a class="link-secondary"
+                                                        href="/<%= restaurant._id %>/employees">
+                                                        <%= restaurant.numEmployees %>
+                                                            <% let payday=0 %>
+                                                                <% if (user.day < 16) { %>
+                                                                    <% payday=(16 - user.day) %>
+                                                                        <% } else { %>
+                                                                            <% payday=(31 - user.day)%>
+                                                                                <% } %>
+                                                                                    <% if (payday==1) { %>
+                                                                                        (payday in <%=payday %> day)
+                                                                                            <% } else { %>
+                                                                                                (payday in <%= payday %>
+                                                                                                    days)
+                                                                                                    <% } %>
+                                                    </a>
                                                 </li>
                                                 <li class="list-group-item">size: ADD
                                                 </li>
                                             </ul>
-                                            <div class="card-body">
-                                                <a href="#" class="card-link btn btn-light">expand</a>
-                                                <a href="#" class="card-link btn btn-light">hire</a>
-                                                <a href="#" class="card-link btn btn-light">marketing</a>
-                                                <a href="/restaurants/<%= restaurant._id %>/edit"
-                                                    class="card-link btn btn-light">edit</a>
+                                            <div class="card-body row">
+                                                <div class="col d-flex justify-content-end"><a
+                                                        href="/restaurants/<%= restaurant._id %>/edit"
+                                                        class="card-link btn btn-light">edit</a>
+                                                </div>
+                                                <div class="col d-flex justify-content-center">
+                                                    <form action="/<%= restaurant._id %>/hire?_method=PUT"
+                                                        method="POST">
+                                                        <button class="card-link btn btn-light">hire</button>
+                                                    </form>
+                                                </div>
+                                                <div class="col d-flex justify-content-start"><a href="#"
+                                                        class="card-link btn btn-light">marketing</a>
+                                                </div>
                                             </div>
                 </div>
             </div>
@@ -93,7 +121,7 @@
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col">
-                                        <a href="/menu/<%= dish._id %>" class="link-secondary">
+                                        <a href="/<%= restaurant._id %>/menu/<%= dish._id %>" class="link-secondary">
                                             <%= dish.stringName %>
                                         </a>
                                     </div>
