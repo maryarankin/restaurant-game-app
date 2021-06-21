@@ -36,12 +36,21 @@
                     </li>
                     <% for (let i of dish.ingredients) { %>
                         <li class="list-group-item">
-                            <%= i.name %>
+                            <%= i.name %>: <%= i.quantity %> on hand
                         </li>
                         <% } %>
+
+                            <li class="list-group-item"><strong>total cost to make:</strong>
+                                <% let totalCost=0 %>
+                                    <% for (let i of dish.ingredients) { totalCost +=i.price } %>
+                                        $<%= totalCost.toFixed(2) %>
+                            </li>
                 </ul>
                 <div class="card-body">
-                    <a href="#" class="card-link btn btn-light">buy ingredients</a>
+                    <form action="/buyall/<%= dish._id %>?_method=PUT" method="POST">
+                        <button class="card-link btn btn-light">buy all ingredients to make 1 <%= dish.stringName %>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

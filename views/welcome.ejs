@@ -1,0 +1,21 @@
+<% layout('layouts/boilerplate') %>
+
+    <div class="container mt-3">
+
+        <h1>how to play restaurant sim</h1>
+        <ul>
+            <li>you can open restaurants of one type - until you unlock the option to branch out to other cuisines</li>
+            <li>pick a location for your restaurant - city rent is highest but will yield more customers; countryside
+                rent is lowest but business will be slower; the suburbs are somewhere in between</li>
+            <li>rent is due on the first of each month; be careful - if you can't pay your rent, you may have to sell a
+                restaurant or two or even declare bankruptcy</li>
+            <li>if you have no money and nothing to sell, the game is over</li>
+        </ul>
+
+        <% if (user.restaurants[0]==null && user.month==1 && user.day==1) { %>
+            <a href="/welcome/createnew" class="btn btn-info">create your first restaurant</a>
+            <% } else { %>
+                <a href="/restaurants" class="btn btn-info">back to restaurants</a>
+                <% } %>
+
+    </div>

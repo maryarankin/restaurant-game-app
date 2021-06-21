@@ -40,6 +40,7 @@ const Ingredient = require('./models/ingredient')
 // DISHES & INGREDIENTS DATA
 const dishesData = require('./newListOfDishes')
 const ingredientsData = require('./newListOfIngredients')
+const user = require('./models/user')
 
 
 
@@ -303,7 +304,7 @@ app.post('/choose/:type', isLoggedIn, async (req, res) => {
         }
 
         await user.save()
-        res.render('restaurants/new')
+        res.redirect('/welcome')
     }
     else {
         const errorMsg = 'you have already picked a restaurant type'
@@ -311,10 +312,41 @@ app.post('/choose/:type', isLoggedIn, async (req, res) => {
     }
 })
 
+//to view instructions later in the game if desired
+app.get('/welcome', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    res.render('welcome', { user })
+})
+
+app.get('/welcome/createnew', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    res.render('restaurants/new', { user })
+})
+
 app.get('/menu/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params
     const dish = await Dish.findById(id).populate('ingredients')  //when did with .find it wouldn't print dish.name, only dish
     res.render('dishes/show', { dish })
+})
+
+app.put('/buyall/:dishId', isLoggedIn, async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    const { dishId } = req.params
+    const dish = await Dish.findById(dishId).populate('ingredients')
+    const ingredients = dish.ingredients
+    let totalIngredientPrice = 0
+    for (let i of ingredients) {
+        totalIngredientPrice += i.price
+    }
+    if (user.money >= totalIngredientPrice) {
+        for (let i of ingredients) {
+            i.quantity++
+            user.money -= i.price
+            await i.save()
+        }
+        await user.save()
+    }
+    res.redirect(`/menu/${dishId}`)
 })
 
 app.put('/menu/:id', isLoggedIn, async (req, res) => {
