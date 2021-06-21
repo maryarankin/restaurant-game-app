@@ -12,15 +12,26 @@
 
 <body>
 
-    <main class="text-center position-absolute top-50 start-50 translate-middle">
-        <div class="title">
+
+    <main class="text-center">
+        <div class="title fixed-top mt-5">
             <h1>so you want to own a restaurant?</h1>
             <h2>a simulation game</h2>
+            <% if (currentUser) { %>
+                <div class="button mt-5">
+                    <a href="/restaurants"><button type="button" class="btn btn-info btn-lg">my restaurants</button></a>
+                </div>
+                <% } else { %>
+                    <div class="button mt-5">
+                        <a href="/login"><button type="button" class="btn btn-info btn-lg">login</button></a>
+                        <a href="/register"><button type="button" class="btn btn-info btn-lg">register</button></a>
+                    </div>
+                    <% } %>
         </div>
-        <div class="button mt-5">
-            <!-- Note: eventually this button will lead to register/login page but for now there is no authentication -->
-            <a href="/login"><button type="button" class="btn btn-info btn-lg">login</button></a>
-            <a href="/register"><button type="button" class="btn btn-info btn-lg">register</button></a>
+
+        <div class="">
+            <img
+                src="https://images.unsplash.com/photo-1428515613728-6b4607e44363?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80">
         </div>
     </main>
 
