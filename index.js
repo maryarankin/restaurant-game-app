@@ -336,19 +336,28 @@ app.put('/endday', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
     const restaurants = user.restaurants
     for (let r of restaurants) {
+        let restaurantProfit = 0
         const dishes = await Dish.find({ restaurant: r })
         for (let d of dishes) {
+            const ingredientIds = d.ingredients
+            let dishIngredients = []
+            for (let i = 0; i < ingredientIds.length; i++) {
+                const dishI = await Ingredient.findById(ingredientIds[i])
+                dishIngredients.push(dishI)
+            }
+
+            let ingredientCost = 0
+            for (let i = 0; i < dishIngredients.length; i++) {
+                ingredientCost += (dishIngredients[i].price * d.quantity)
+            }
+
+            restaurantProfit += (d.quantity * d.price) - ingredientCost
             user.money += (d.quantity * d.price)
             d.quantity = 0
             await d.save()
-
-            //ADD FUNCTIONALITY FOR PROFIT:
-            //find ingredients for each dish b/c .populate not working
-            // dishProfit = d.price //and have a variable overall for restaurantProfit
-            // for (let i of d.ingredients) {
-            // dishProfit -= i.price
-            // }
         }
+        r.profit += restaurantProfit
+        await r.save()
     }
     user.day++
     await user.save()

@@ -73,7 +73,9 @@
                                                                                                     %>
                                                                                             </li>
                                                                                             <li class="list-group-item">
-                                                                                                profit: <%= r.profit %>
+                                                                                                profit: $<%=
+                                                                                                    r.profit.toFixed(2)
+                                                                                                    %>
                                                                                             </li>
                                                                                             <li class="list-group-item">
                                                                                                 rating: <%= r.rating %>
