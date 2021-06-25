@@ -95,6 +95,7 @@ app.use((req, res, next) => {
     res.locals.currentUser = req.user
     res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
+    res.locals.event = req.flash('event')
     next()
 })
 
@@ -474,7 +475,7 @@ app.put('/endday', isLoggedIn, async (req, res) => {
             userIngredients.push(ingredient)
         }
         //add up price of each ingredient in stock until you have at least $2 surplus to continue to play on
-        while (assets + user.money < 2) {
+        while (assets + user.money < 2 && userIngredients[0].quantity > 0) {
             for (let i = 0; i < userIngredients.length; i++) {
                 if (assets + user.money < 2) {
                     if (userIngredients[i].quantity > 0) {
@@ -515,6 +516,12 @@ app.put('/endday', isLoggedIn, async (req, res) => {
     }
     else {
         await user.save()
+        if (user.day == 11) {
+            req.flash('event', 'employee payday in 5 days')
+        }
+        if (user.day == 26) {
+            req.flash('event', 'rent due in 5 days')
+        }
         res.redirect('/restaurants')
     }
 })
