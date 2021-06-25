@@ -475,7 +475,7 @@ app.put('/endday', isLoggedIn, async (req, res) => {
             userIngredients.push(ingredient)
         }
         //add up price of each ingredient in stock until you have at least $2 surplus to continue to play on
-        while (assets + user.money < 2 && userIngredients[0].quantity > 0) {
+        while (assets + user.money < 2 && userIngredients[0].quantity > 0) { //FIX THIS - could have quantity left in a different ingredient besides the first one
             for (let i = 0; i < userIngredients.length; i++) {
                 if (assets + user.money < 2) {
                     if (userIngredients[i].quantity > 0) {
