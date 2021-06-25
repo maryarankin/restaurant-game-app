@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
 const session = require('express-session')
+const flash = require('connect-flash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const { isLoggedIn, isOwner } = require('./middleware')
@@ -41,6 +42,7 @@ const Ingredient = require('./models/ingredient')
 const dishesData = require('./newListOfDishes')
 const ingredientsData = require('./newListOfIngredients')
 const user = require('./models/user')
+const { use } = require('passport')
 
 
 
@@ -78,6 +80,7 @@ const sessionConfig = {
 }
 
 app.use(session(sessionConfig))
+app.use(flash());
 
 
 
@@ -90,6 +93,8 @@ passport.deserializeUser(User.deserializeUser())
 
 app.use((req, res, next) => {
     res.locals.currentUser = req.user
+    res.locals.success = req.flash('success')
+    res.locals.error = req.flash('error')
     next()
 })
 
@@ -178,6 +183,7 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
     await restaurant.save()
     user.restaurants.push(restaurant)
     await user.save()
+    req.flash('success', 'created a new restaurant')
     res.redirect('/restaurants')
 })
 
@@ -456,8 +462,61 @@ app.put('/endday', isLoggedIn, async (req, res) => {
         user.month++
         user.day = 1
     }
-    await user.save()
-    res.redirect('/restaurants')
+
+    //if negative dollar amount
+    if (user.money < 0) {
+        let assets = 0
+        const ingredients = user.ingredients
+        let userIngredients = []
+        //find all of a user's ingredients
+        for (let i of ingredients) {
+            const ingredient = await Ingredient.findById(i)
+            userIngredients.push(ingredient)
+        }
+        //add up price of each ingredient in stock until you have at least $2 surplus to continue to play on
+        while (assets + user.money < 2) {
+            for (let i = 0; i < userIngredients.length; i++) {
+                if (assets + user.money < 2) {
+                    if (userIngredients[i].quantity > 0) {
+                        assets += userIngredients[i].price
+                        userIngredients[i].quantity--
+                    }
+                    await userIngredients[i].save()
+                }
+            }
+        }
+
+        // for (let i of userIngredients) {
+        //     if (assets + user.money < 2) {
+        //         assets += (i.quantity * i.price)
+        //         i.quantity = 0
+        //         await i.save()
+        //     }
+        // }
+        if (assets + user.money > 0) {
+            user.money += assets
+            await user.save()
+            res.redirect('/restaurants')
+        }
+        else {
+            for (let r of restaurants) {
+                const dishes = await Dish.find({ restaurant: r })
+                for (let d of dishes) {
+                    await Dish.deleteOne(d)
+                }
+                r.dishes = []
+                await r.save()
+                await Restaurant.deleteOne(r)
+            }
+            user.restaurants = []
+            await user.save()
+            res.render('gameOver')
+        }
+    }
+    else {
+        await user.save()
+        res.redirect('/restaurants')
+    }
 })
 
 app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
@@ -502,6 +561,26 @@ app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
         const errorMsg = 'employees cannot make any more food. hire more employees'
         res.render('error', { errorMsg })
     }
+})
+
+app.get('/startover', isLoggedIn, async (req, res) => {
+    //also delete ingredients for game over & recreate them when making a new restaurant?
+    const user = await User.findById(res.locals.currentUser._id).populate('ingredients')
+    user.money = 0
+    user.month = 1
+    user.day = 1
+    const ingredients = user.ingredients
+    for (let i of ingredients) {
+        i.quantity++
+        await i.save()
+    }
+    await user.save()
+    res.render('startOver')
+})
+
+app.all('*', (req, res) => {
+    const errorMsg = 'page not found'
+    res.render('error', { errorMsg })
 })
 
 // EXPRESS PORT
