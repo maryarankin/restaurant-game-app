@@ -26,10 +26,17 @@
                     <li class="list-group-item"><strong>total number of dishes made at <%= restaurant.name %>:
                         </strong></li>
                 </ul>
-                <div class="card-body">
-                    <form action="/<%= restaurant._id %>/employees/hire?_method=PUT" method="POST">
-                        <button class="card-link btn btn-light">hire new employee</button>
-                    </form>
+                <div class="card-body row">
+                    <div class="col d-flex justify-content-end">
+                        <form action="/<%= restaurant._id %>/employees/hire?_method=PUT" method="POST">
+                            <button class="card-link btn btn-light">hire new employee</button>
+                        </form>
+                    </div>
+                    <div class="col d-flex justify-content-start">
+                        <form action="/<%= restaurant._id %>/employees/fire?_method=PUT" method="POST">
+                            <button class="card-link btn btn-light">fire an employee</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

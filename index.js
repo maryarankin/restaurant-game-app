@@ -411,6 +411,14 @@ app.put('/:restaurantId/employees/hire', isLoggedIn, async (req, res) => {
     res.redirect(`/${restaurant._id}/employees`)
 })
 
+app.put('/:restaurantId/employees/fire', isLoggedIn, async (req, res) => {
+    const { restaurantId } = req.params
+    const restaurant = await Restaurant.findById(restaurantId)
+    restaurant.numEmployees--
+    await restaurant.save()
+    res.redirect(`/${restaurant._id}/employees`)
+})
+
 app.put('/endday', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
     const restaurants = user.restaurants
@@ -560,13 +568,13 @@ app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
         await dish.save()
         res.redirect(`/restaurants/${restaurantId}`)
     }
-    else if (!haveAllIngredients) { //CHANGE THIS TO A FLASH MESSAGE LATER
-        const errorMsg = 'need to buy ingredients'
-        res.render('error', { errorMsg })
+    else if (!haveAllIngredients) { 
+        req.flash('error', 'need to buy ingredients')
+        res.redirect(`/restaurants/${restaurantId}`)
     }
     else {
-        const errorMsg = 'employees cannot make any more food. hire more employees'
-        res.render('error', { errorMsg })
+        req.flash('error', 'employees cannot make any more food. hire more employees')
+        res.redirect(`/restaurants/${restaurantId}`)
     }
 })
 
