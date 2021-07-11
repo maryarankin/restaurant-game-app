@@ -481,6 +481,11 @@ app.put('/endday', isLoggedIn, async (req, res) => {
                 user.money += preparedDishes[index].price
                 preparedDishes.splice(index, 1)
             }
+            for (let i = 0; i < preparedDishes.length; i++) {
+                preparedDishes[i].quantity = 0
+                await preparedDishes[i].save()
+            }
+            req.flash('error', 'you made too many things and they didn\'t all sell :(')
         }
 
         r.profit += restaurantProfit
