@@ -422,10 +422,31 @@ app.put('/:restaurantId/employees/fire', isLoggedIn, async (req, res) => {
 app.put('/endday', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
     const restaurants = user.restaurants
+
+    let restaurantProfit = 0
+
     for (let r of restaurants) {
-        let restaurantProfit = 0
+
+        if (r.location == 'city') {
+            maxDishesSold = 10
+        }
+        else if (r.location == 'suburbs') {
+            maxDishesSold = 7
+        }
+        else {
+            maxDishesSold = 5
+        }
+
         const dishes = await Dish.find({ restaurant: r })
+        let preparedDishes = []
+
         for (let d of dishes) {
+            for (let i = 0; i < d.quantity; i++) {
+                preparedDishes.push(d)
+            }
+        }
+
+        const sellDish = async (d) => {
             const ingredientIds = d.ingredients
             let dishIngredients = []
             for (let i = 0; i < ingredientIds.length; i++) {
@@ -435,15 +456,33 @@ app.put('/endday', isLoggedIn, async (req, res) => {
 
             let ingredientCost = 0
             for (let i = 0; i < dishIngredients.length; i++) {
-                ingredientCost += (dishIngredients[i].price * d.quantity)
+                ingredientCost += dishIngredients[i].price
             }
 
-            restaurantProfit += (d.quantity * d.price) - ingredientCost
-            user.money += (d.quantity * d.price)
-            d.numberSold += d.quantity
-            d.quantity = 0
+            d.numberSold++
+            d.quantity--
             await d.save()
+            return (d.price - ingredientCost)
         }
+
+        if (preparedDishes.length < maxDishesSold) {
+            for (let d of preparedDishes) {
+                let profit = await sellDish(d)
+                restaurantProfit += profit
+                user.money += d.price
+            }
+        }
+        else {
+            for (let i = 0; i < maxDishesSold; i++) {
+                let index = Math.floor(Math.random() * preparedDishes.length)
+                let toSell = preparedDishes[index]
+                let profit = await sellDish(toSell)
+                restaurantProfit += profit
+                user.money += preparedDishes[index].price
+                preparedDishes.splice(index, 1)
+            }
+        }
+
         r.profit += restaurantProfit
         await r.save()
     }
