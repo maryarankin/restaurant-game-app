@@ -43,6 +43,7 @@ const dishesData = require('./newListOfDishes')
 const ingredientsData = require('./newListOfIngredients')
 const user = require('./models/user')
 const { use } = require('passport')
+const restaurant = require('./models/restaurant')
 
 
 
@@ -423,8 +424,6 @@ app.put('/endday', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
     const restaurants = user.restaurants
 
-    let restaurantProfit = 0
-
     for (let r of restaurants) {
 
         if (r.location == 'city') {
@@ -465,7 +464,12 @@ app.put('/endday', isLoggedIn, async (req, res) => {
             return (d.price - ingredientCost)
         }
 
-        if (preparedDishes.length < maxDishesSold) {
+        let restaurantProfit = 0
+
+        if (preparedDishes.length == 0) {
+            restaurantProfit = 0
+        }
+        else if (preparedDishes.length <= maxDishesSold) {
             for (let d of preparedDishes) {
                 let profit = await sellDish(d)
                 restaurantProfit += profit
@@ -479,9 +483,24 @@ app.put('/endday', isLoggedIn, async (req, res) => {
                 let profit = await sellDish(toSell)
                 restaurantProfit += profit
                 user.money += preparedDishes[index].price
+                //FIX THIS SO THE INDEX DOESN'T CHANGE EACH TIME:
                 preparedDishes.splice(index, 1)
             }
             for (let i = 0; i < preparedDishes.length; i++) {
+                console.log(preparedDishes)
+                const ingredientIds = preparedDishes[i].ingredients
+                let dishIngredients = []
+                for (let i = 0; i < ingredientIds.length; i++) {
+                    const dishI = await Ingredient.findById(ingredientIds[i])
+                    dishIngredients.push(dishI)
+                }
+
+                let ingredientCost = 0
+                for (let i = 0; i < dishIngredients.length; i++) {
+                    ingredientCost += dishIngredients[i].price
+                }
+                restaurant.profit -= ingredientCost
+
                 preparedDishes[i].quantity = 0
                 await preparedDishes[i].save()
             }
@@ -489,14 +508,35 @@ app.put('/endday', isLoggedIn, async (req, res) => {
         }
 
         r.profit += restaurantProfit
+
+        if (r.profit >= 1000 && r.rating < 2) {
+            r.rating = 2
+            req.flash('event', `a local guide gave ${r.name} a 2-star review online. that\'s a start!`)
+        }
+        if (r.profit > 5000 && r.rating < 3) {
+            r.rating = 3
+            req.flash('event', `${r.name} has several 3-star reviews online. not bad!`)
+        }
+        if (r.profit > 10000 && r.rating < 4) {
+            r.rating = 4
+            req.flash('event', `a prominent food blogger gave ${r.name} a 4-star review. great job!`)
+        }
+        if (r.profit > 20000 && r.rating < 5) {
+            r.rating = 5
+            req.flash('event', `a famous food critic gave ${r.name} 5 stars! congratulations!`)
+        }
+
         await r.save()
     }
+
     user.day++
 
     //paying employees
     if (user.day == 16 || user.day == 31) {
         for (let r of restaurants) {
             user.money -= (r.numEmployees * r.employeePay)
+            r.profit -= (r.numEmployees * r.employeePay)
+            await r.save()
         }
     }
 
@@ -507,9 +547,13 @@ app.put('/endday', isLoggedIn, async (req, res) => {
             //pro-rate if opened mid-month:
             if (r.monthOpened == user.month) {
                 user.money -= ((r.rent * (31 - r.dayOpened)) / 30)  //31 b/c if opened first day of month, charge for whole month
+                r.profit -= ((r.rent * (31 - r.dayOpened)) / 30)
+                await r.save()
             }
             else {
                 user.money -= r.rent
+                r.profit -= r.rent
+                await r.save()
             }
         }
         user.month++
