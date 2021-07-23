@@ -483,11 +483,9 @@ app.put('/endday', isLoggedIn, async (req, res) => {
                 let profit = await sellDish(toSell)
                 restaurantProfit += profit
                 user.money += preparedDishes[index].price
-                //FIX THIS SO THE INDEX DOESN'T CHANGE EACH TIME:
                 preparedDishes.splice(index, 1)
             }
             for (let i = 0; i < preparedDishes.length; i++) {
-                console.log(preparedDishes)
                 const ingredientIds = preparedDishes[i].ingredients
                 let dishIngredients = []
                 for (let i = 0; i < ingredientIds.length; i++) {
