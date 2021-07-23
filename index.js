@@ -558,6 +558,6 @@ app.all('*', (req, res) => {
 })
 
 // EXPRESS PORT
-app.listen(80, () => {
-    console.log('serving on port 80')
+app.listen(8080, () => {
+    console.log('serving on port 8080')
 })
