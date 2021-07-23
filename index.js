@@ -135,7 +135,7 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        secure: true,
+        //secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -558,6 +558,6 @@ app.all('*', (req, res) => {
 })
 
 // EXPRESS PORT
-app.listen(443, () => {
-    console.log('serving on port 443')
+app.listen(80, () => {
+    console.log('serving on port 80')
 })
