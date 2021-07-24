@@ -2,9 +2,10 @@ const mongoose = require('mongoose')
 const User = require('./models/user')
 
 module.exports.randomEvents = async (req, res) => {
+    console.log('test1')
     const user = await User.findById(res.locals.currentUser._id)
-    
-    console.log('test')
+
+    console.log('test2')
     let message = ''
     let messageType = ''
     if (user.month == 1 && user.day == 14) {
@@ -13,6 +14,6 @@ module.exports.randomEvents = async (req, res) => {
         user.money += 5
         await user.save()
         req.flash(messageType, message)
-        console.log('test2')
+        console.log('test3')
     }
 }

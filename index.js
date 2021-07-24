@@ -486,8 +486,8 @@ app.put('/:restaurantId/employees/fire', isLoggedIn, async (req, res) => {
 })
 
 app.put('/endday', isLoggedIn, async (req, res) => {
-    await randomEvents(req, res);
-    await endDay(req, res);
+    await randomEvents(req, res)
+    await endDay(req, res)
 })
 
 app.put('/:restaurantId/cook/:dishId', isLoggedIn, async (req, res) => {
