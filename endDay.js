@@ -3,13 +3,9 @@ const User = require('./models/user')
 const Restaurant = require('./models/restaurant')
 const Dish = require('./models/dish')
 const Ingredient = require('./models/ingredient')
-const { randomEvents } = require('./randomEvents')
 
 module.exports.endDay = async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
-
-    await randomEvents(user, req)
-
     const restaurants = user.restaurants
 
     for (let r of restaurants) {

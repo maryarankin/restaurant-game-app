@@ -21,6 +21,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const { isLoggedIn, isOwner } = require('./middleware')
 const { endDay } = require('./endDay')
+const { randomEvents } = require('./randomEvents')
 
 
 
@@ -485,6 +486,7 @@ app.put('/:restaurantId/employees/fire', isLoggedIn, async (req, res) => {
 })
 
 app.put('/endday', isLoggedIn, async (req, res) => {
+    await randomEvents(req, res);
     await endDay(req, res);
 })
 

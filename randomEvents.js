@@ -1,7 +1,9 @@
 const mongoose = require('mongoose')
 const User = require('./models/user')
 
-module.exports.randomEvents = async (user, req) => {
+module.exports.randomEvents = async (req, res) => {
+    const user = await User.findById(res.locals.currentUser._id)
+    
     console.log('test')
     let message = ''
     let messageType = ''
