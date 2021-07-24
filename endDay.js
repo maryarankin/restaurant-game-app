@@ -165,13 +165,6 @@ module.exports.endDay = async (req, res) => {
             }
         }
 
-        // for (let i of userIngredients) {
-        //     if (assets + user.money < 2) {
-        //         assets += (i.quantity * i.price)
-        //         i.quantity = 0
-        //         await i.save()
-        //     }
-        // }
         if (assets + user.money > 0) {
             user.money += assets
             await user.save()

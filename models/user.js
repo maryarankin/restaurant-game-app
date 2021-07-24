@@ -39,8 +39,6 @@ const UserSchema = new Schema({
     }
 })
 
-//note: need to add fxnality to delete restaurants if user is deleted
-
 UserSchema.plugin(passportLocalMongoose)
 
 module.exports = mongoose.model('User', UserSchema)

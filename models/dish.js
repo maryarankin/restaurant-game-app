@@ -7,8 +7,6 @@ const DishSchema = new Schema({
         type: String,
         required: true
     },
-
-    //REMOVE THIS LATER?
     stringName: {
         type: String,
         required: true
@@ -21,8 +19,6 @@ const DishSchema = new Schema({
         type: Number,
         required: true
     },
-
-    //MAKE THIS AN ENUM?
     category: {
         type: String,
         required: true

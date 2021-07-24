@@ -135,7 +135,7 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        //secure: true,
+        secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -218,7 +218,7 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
     restaurant.numEmployees = 1
     restaurant.profit = 0
     restaurant.rating = 1
-    //create new instances of the dishes each time creating new restaurant so each can have their own prices
+    //create new instances of the dishes each time creating new restaurant so each can have their own prices:
     let dishType = null
     if (restaurant.type == 'pizza-parlor') {
         dishType = dishesData.pizzaDishes
@@ -244,11 +244,6 @@ app.post('/restaurants', isLoggedIn, async (req, res) => {
         restaurant.dishes.push(newDish)
     }
 
-    // const dishes = await Dish.find({ category: restaurant.type })
-    // //change this syntax:
-    // for (let dish of dishes) {
-    //     restaurant.dishes.push(dish)
-    // }
     await restaurant.save()
     user.restaurants.push(restaurant)
     await user.save()
@@ -398,7 +393,7 @@ app.post('/choose/:type', isLoggedIn, async (req, res) => {
     }
 })
 
-//to view instructions later in the game if desired
+//to view instructions later in the game if desired:
 app.get('/welcome', isLoggedIn, async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id)
     res.render('welcome', { user })
