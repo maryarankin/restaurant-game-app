@@ -7,7 +7,7 @@ const Ingredient = require('./models/ingredient')
 module.exports.endDay = async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
 
-    randomEvents(req, user)
+    await randomEvents(req, user)
 
     const restaurants = user.restaurants
 
