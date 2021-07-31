@@ -3,6 +3,7 @@ const User = require('./models/user')
 const Restaurant = require('./models/restaurant')
 const Dish = require('./models/dish')
 const Ingredient = require('./models/ingredient')
+const { randomEvents } = require('./randomEvents')
 
 module.exports.endDay = async (req, res) => {
     const user = await User.findById(res.locals.currentUser._id).populate('restaurants')
@@ -198,19 +199,6 @@ module.exports.endDay = async (req, res) => {
             req.flash('event', 'rent due in 5 days')
         }
         res.redirect('/restaurants')
-    }
-}
-
-
-randomEvents = async (req, user) => {
-    let message = ''
-    let messageType = ''
-    if (user.month == 1 && user.day == 14) {
-        message = 'you found 5 dollars on the ground'
-        messageType = 'success'
-        user.money += 5
-        await user.save()
-        req.flash(messageType, message)
     }
 }
  
