@@ -51,4 +51,6 @@ const RestaurantSchema = new Schema({
     }
 })
 
+//add size functionality - make expandable
+
 module.exports = mongoose.model('Restaurant', RestaurantSchema)
